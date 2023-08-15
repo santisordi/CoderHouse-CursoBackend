@@ -45,7 +45,7 @@ export class ProductManager {
     }
   }
 
-  async getProductById(id) {
+  async getProductsById(id) {
     try {
       this.products = JSON.parse(await fs.readFile(this.path, 'utf-8'));
       const product = this.products.find(product => product.id == id);
