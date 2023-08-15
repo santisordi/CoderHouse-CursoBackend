@@ -37,4 +37,5 @@ app.post('/upload', upload.single('product'), (req, res)=>{ //single para una so
 //Server 
 app.listen(PORT, ()=>{
     console.log(`Server on port ${PORT}`);
+    console.log(`http://localhost:${PORT}`);
 })
