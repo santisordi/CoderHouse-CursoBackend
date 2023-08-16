@@ -1,7 +1,7 @@
 {
   "name": "1rapreentregasordi",
   "version": "1.0.0",
-  "descrsiption": "",
+  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
+    "moulder": "^0.2.1-dev7",
     "nanoid": "^4.0.2"
   },
   "devDependencies": {
