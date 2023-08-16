@@ -16,6 +16,4 @@ class ProductManager{
     }
 }
 
-const product = new ProductManager;
-
-product.writeProducts();
+export default ProductManager;
