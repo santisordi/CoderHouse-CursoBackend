@@ -1,1 +1,29 @@
-[{"title":"Producto 3","description":"Descripción del producto 2","price":29.99,"thumbnail":"imagen_producto_2.jpg","code":"XYZ456","stock":30,"id":"82viOI1iW263vO4_xnrsw"},{"title":"Producto 2 actualizado","description":"Descripción del producto 2","price":29.99,"thumbnail":"imagen_producto_2.jpg","code":"XYZ456","stock":50,"id":"tfUxOZxovpbA1wToBGyLP"},{"title":"Producto 5","description":"Descripción del producto 1","price":19.99,"thumbnail":"imagen_producto_1.jpg","code":"ABC123","stock":50,"id":"mYFFxbWgxzc8nw95woIIO"}]
+[
+  {
+    "title": "Producto 3",
+    "description": "Descripción del producto 2",
+    "price": 29.99,
+    "thumbnail": "imagen_producto_2.jpg",
+    "code": "XYZ456",
+    "stock": 30,
+    "id": "82viOI1iW263vO4_xnrsw"
+  },
+  {
+    "title": "Producto 2 actualizado",
+    "description": "Descripción del producto 2",
+    "price": 29.99,
+    "thumbnail": "imagen_producto_2.jpg",
+    "code": "XYZ456",
+    "stock": 50,
+    "id": "tfUxOZxovpbA1wToBGyLP"
+  },
+  {
+    "title": "Producto 5",
+    "description": "Descripción del producto 1",
+    "price": 19.99,
+    "thumbnail": "imagen_producto_1.jpg",
+    "code": "ABC123",
+    "stock": 50,
+    "id": "mYFFxbWgxzc8nw95woIIO"
+  }
+]

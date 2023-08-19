@@ -2,7 +2,7 @@ import { promises as fs} from 'fs';
 import { nanoid } from 'nanoid';
 import ProductManager from './ProductManager.js';
 
-const productAll = new ProductManager; //con esto podemos usar todos los metodos del PM
+const productAll = new ProductManager(); //con esto podemos usar todos los metodos del PM
 
 
 class CartManager {
@@ -39,27 +39,34 @@ class CartManager {
         return cartsById;
     };
 
-    addProductInCart = async (cartId, productId)=>{
-        let cartsById = await this.exist(cartId);
-        if (!cartsById) return "Carrito no encontrado";
+    addProductInCart = async (cartId, productId) => {
+        let cartById = await this.exist(cartId);
+        if (!cartById) return "Carrito no encontrado";
+    
         let productById = await productAll.exist(productId);
         if (!productById) return "Producto no encontrado";
-        
+    
         let cartsAll = await this.readCarts();
-        let carFilter = cartsAll.filter(prod => prod.id != productId);
-
-        if(cartId.products.some( prod => prod.id === productId)){
-            let productInCart = cartId.products.find(prod => prod.id === productId);
-            productInCart.cantidad++;
-            let cartConcat = [productInCart, ...carFilter]
-            await this.writeCarts(cartConcat);
-            return "Producto sumado al carrito";
-
+        let cartIndex = cartsAll.findIndex(cart => cart.id === cartId);
+    
+        if (cartIndex !== -1) {
+            let cart = cartsAll[cartIndex];
+            let productIndex = cart.products.findIndex(prod => prod.id === productId);
+    
+            if (productIndex !== -1) {
+                cart.products[productIndex].cantidad++;
+                await this.writeCarts(cartsAll);
+                return "Producto sumado al carrito";
+            } else {
+                cart.products.push({ id: productById.id, cantidad: 1 });
+                await this.writeCarts(cartsAll);
+                return "Producto agregado al carrito";
+            };
         };
-        let cartConcat = [{id:cartId, products: [{id:productById.id, cantidad: 1}]}, ...carFilter];
-
-        return "Producto agregado al carrito";
+    
+        return "Carrito no encontrado";
     };
+    
 
 };
 
