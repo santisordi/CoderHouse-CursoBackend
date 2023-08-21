@@ -31,9 +31,25 @@ const upload = multer({ storage: storage});
 app.use('/static', express.static (path.join(__dirname, '/public')));
 app.use('/api/products', ProductRouter); //aca se enlaza la ruta al use
 app.use('/api/cart', CartRouter); 
-app.use('/static', (req, res) => { //HBS indicar la planitlla que utilizo   
-    res.render("home", {
+app.get('/static', (req, res) => { //HBS  
+    const user = {
+        nombre: "Lucia",
+        cargo: "tutor" 
+    }
 
+    const cursos = [
+        {numCurso: "123", dia : "LyM", horario: "mañana"},
+        {numCurso: "456", dia : "MyJ", horario: "tarde"},
+        {numCurso: "789", dia : "S", horario: "noche"}
+    ];
+    
+    res.render("users", { //indico la plantilla que utilizo
+        nombreUsuario: "Santiago",
+        titulo: "users",
+        usuario: user,
+        rutaCSS: "user.css",
+        isTutor: user.cargo == "tutor",
+        cursos: cursos
     })
 
 })
