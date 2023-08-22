@@ -1,13 +1,25 @@
 import express from 'express';
 import multer from 'multer';
 import {engine} from 'express-handlebars';
+import { Server } from 'socket.io';
 import ProductRouter from './router/product.routes.js';
 import CartRouter from './router/carts.routes.js';
 import { __dirname } from './path.js';
 import path from 'path';
+import { Socket } from 'dgram';
+import { info } from 'console';
 
 const PORT = 4000;
 const app = express();
+
+//Server
+const server = app.listen(PORT, ()=>{
+    console.log(`Servidor Express Puerto ${PORT}`);
+    console.log(`http://localhost:${PORT}`);
+});
+
+const io = new Server(server);
+
 
 //Config Multer
 const storage = multer.diskStorage({
@@ -27,6 +39,22 @@ app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views')); //esta es otra forma de trabajar con rutas
 const upload = multer({ storage: storage});
 
+//Conexion Socket.io
+io.on("connection", (socket)=>{
+        console.log("Conexion con Socket io");
+        socket.on('mensaje', info =>{
+            console.log(info);
+            socket.emit('respuesta', true);
+        })
+
+        socket.on('juego', (infoJuego)=>{
+            if(infoJuego == 'poker')
+            console.log("Conexion a poker");
+            else
+                console.log("Conexion a Truco");
+        });
+});
+
 //Routes
 app.use('/static', express.static (path.join(__dirname, '/public')));
 app.use('/api/products', ProductRouter); //aca se enlaza la ruta al use
@@ -43,14 +71,19 @@ app.get('/static', (req, res) => { //HBS
         {numCurso: "789", dia : "S", horario: "noche"}
     ];
     
-    res.render("users", { //indico la plantilla que utilizo
-        nombreUsuario: "Santiago",
-        titulo: "users",
-        usuario: user,
-        rutaCSS: "user.css",
-        isTutor: user.cargo == "tutor",
-        cursos: cursos
-    })
+    // res.render("users", { //indico la plantilla que utilizo
+    //     nombreUsuario: "Santiago",
+    //     titulo: "users",
+    //     usuario: user,
+    //     rutaCSS: "user.css",
+    //     isTutor: user.cargo == "tutor",
+    //     cursos: cursos
+    // });
+
+    res.render("realTimeProducts", { 
+        rutaCSS: "realTimeProducts",
+        rutaJS: "realTimeProducts"
+    });
 
 })
 app.post('/upload', upload.single('producto'), (req, res)=>{
@@ -59,8 +92,3 @@ app.post('/upload', upload.single('producto'), (req, res)=>{
     res.status(200).send("Imagen cargada")
 });
 
-//Server
-app.listen(PORT, ()=>{
-    console.log(`Servidor Express Puerto ${PORT}`);
-    console.log(`http://localhost:${PORT}`);
-});
