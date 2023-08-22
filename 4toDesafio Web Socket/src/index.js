@@ -53,6 +53,13 @@ io.on("connection", (socket)=>{
             else
                 console.log("Conexion a Truco");
         });
+
+        socket.on('nuevoProducto', (prod)=>{
+            console.log(prod);
+            //agregar al json mediante addProduct
+
+            socket.emit("mensajeProductoCreado", "El producto se creo correctamente");
+        });
 });
 
 //Routes
@@ -60,16 +67,17 @@ app.use('/static', express.static (path.join(__dirname, '/public')));
 app.use('/api/products', ProductRouter); //aca se enlaza la ruta al use
 app.use('/api/cart', CartRouter); 
 app.get('/static', (req, res) => { //HBS  
-    const user = {
-        nombre: "Lucia",
-        cargo: "tutor" 
-    }
+    
+    // const user = {
+    //     nombre: "Lucia",
+    //     cargo: "tutor" 
+    // }
 
-    const cursos = [
-        {numCurso: "123", dia : "LyM", horario: "mañana"},
-        {numCurso: "456", dia : "MyJ", horario: "tarde"},
-        {numCurso: "789", dia : "S", horario: "noche"}
-    ];
+    // const cursos = [
+    //     {numCurso: "123", dia : "LyM", horario: "mañana"},
+    //     {numCurso: "456", dia : "MyJ", horario: "tarde"},
+    //     {numCurso: "789", dia : "S", horario: "noche"}
+    // ];
     
     // res.render("users", { //indico la plantilla que utilizo
     //     nombreUsuario: "Santiago",
