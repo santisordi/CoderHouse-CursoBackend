@@ -1,13 +1,13 @@
 {
   "name": "4todesafio-web-socket",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.js",
   "type": "module",
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/main.js"
   },
   "keywords": [],
   "author": "",

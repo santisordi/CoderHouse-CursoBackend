@@ -4,12 +4,13 @@ import {engine} from 'express-handlebars';
 import { Server } from 'socket.io';
 import ProductRouter from './router/product.routes.js';
 import CartRouter from './router/carts.routes.js';
+import  ProductManager from './controllers/ProductManager.js';
 import { __dirname } from './path.js';
 import path from 'path';
-import { Socket } from 'dgram';
-import { info } from 'console';
 
 const PORT = 4000;
+const productManager = new ProductManager('./src/models/products.json');
+
 const app = express();
 
 //Server
@@ -19,7 +20,6 @@ const server = app.listen(PORT, ()=>{
 });
 
 const io = new Server(server);
-
 
 //Config Multer
 const storage = multer.diskStorage({
@@ -37,37 +37,54 @@ app.use(express.urlencoded({extended: true}));
 app.engine('handlebars', engine()); //defino que trabajo con habndlebars y guardo config de engine
 app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views')); //esta es otra forma de trabajar con rutas
-const upload = multer({ storage: storage});
+// const upload = multer({ storage: storage});
 
 //Conexion Socket.io
 io.on("connection", (socket)=>{
         console.log("Conexion con Socket io");
-        socket.on('mensaje', info =>{
-            console.log(info);
-            socket.emit('respuesta', true);
-        })
-
-        socket.on('juego', (infoJuego)=>{
-            if(infoJuego == 'poker')
-            console.log("Conexion a poker");
-            else
-                console.log("Conexion a Truco");
+        
+        socket.on('load', async () => {
+            const products = await productManager.getProducts();
+            socket.emit('products', products);
+        });
+        
+        socket.on('newProduct', async product => {
+            await productManager.addProducts(product);
+            const products = await productManager.getProducts();
+            socket.emit('products', products);
         });
 
-        socket.on('nuevoProducto', (prod)=>{
-            console.log(prod);
-            //agregar al json mediante addProduct
+        // socket.on('mensaje', info =>{
+        //     console.log(info);
+        //     socket.emit('respuesta', true);
+        // })
 
-            socket.emit("mensajeProductoCreado", "El producto se creo correctamente");
-        });
+        // socket.on('juego', (infoJuego)=>{
+        //     if(infoJuego == 'poker')
+        //     console.log("Conexion a poker");
+        //     else
+        //         console.log("Conexion a Truco");
+        // });
 });
 
 //Routes
 app.use('/static', express.static (path.join(__dirname, '/public')));
 app.use('/api/products', ProductRouter); //aca se enlaza la ruta al use
-app.use('/api/cart', CartRouter); 
-app.get('/static', (req, res) => { //HBS  
-    
+app.use('/api/cart', CartRouter);
+
+app.get('/static', (req, res) => {
+	res.render('index', {
+		rutaCSS: 'index',
+		rutaJS: 'index',
+	});
+});
+
+app.get('/static/realtimeproducts', (req, res) => { //HBS  
+        res.render('realTimeProducts', { 
+            rutaCSS: "realTimeProducts",
+            rutaJS: "realTimeProducts"
+        });
+});   
     // const user = {
     //     nombre: "Lucia",
     //     cargo: "tutor" 
@@ -88,15 +105,10 @@ app.get('/static', (req, res) => { //HBS
     //     cursos: cursos
     // });
 
-    res.render("realTimeProducts", { 
-        rutaCSS: "realTimeProducts",
-        rutaJS: "realTimeProducts"
-    });
 
-})
-app.post('/upload', upload.single('producto'), (req, res)=>{
-    console.log(req.file);
-    console.log(req.body);
-    res.status(200).send("Imagen cargada")
-});
+// app.post('/upload', upload.single('producto'), (req, res)=>{
+//     console.log(req.file);
+//     console.log(req.body);
+//     res.status(200).send("Imagen cargada")
+// });
 
