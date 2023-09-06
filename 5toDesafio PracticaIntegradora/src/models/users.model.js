@@ -8,7 +8,7 @@ const userSchema = new Schema({
         type: String,
         unique: true,
     },
-    password: String
+    password: String,
 });
 
 export const userModel = model('users', userSchema);  

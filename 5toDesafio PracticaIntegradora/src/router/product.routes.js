@@ -15,10 +15,10 @@ productRouter.get("/", async (req, res)=>{
     };
 }); 
 
-productRouter.get("/:id", async (req, res)=>{
-    const {id} = req.params;
+productRouter.get("/:pid", async (req, res)=>{
+    const {pid} = req.params;
     try {
-        const prod = await productsModel.findById(id);
+        const prod = await productsModel.findById(pid);
         if (prod)
             res.status(200).send({resultado: 'ok', message: prod });
         else
@@ -42,35 +42,38 @@ productRouter.post("/", async (req, res)=>{
     };
 }); 
 
-productRouter.put("/:id", async (req, res)=>{
-    const {id} = req.params
+productRouter.put("/:pid", async (req, res)=>{
+    const {pid} = req.params
     const { title, description, stock, code, price, category, status } = req.body;
     
     try {
-        const respuesta = await productsModel.findByIdAndUpdate(id, {
-            title, description, stock, code, price, category, status});
-            
-        if (prod)
-            res.status(200).send({resultado: 'ok', message: respuesta });
-        else
-            res.status(404).send({resultado: 'Not Found', message: res });
-            
-    }catch (error){
-         res.status(400).send({error: `Error al actualizar productos: ${error}`});
-    };
+        const prod = await productsModel.findByIdAndUpdate(pid, {
+          title, description, stock, code, price, category, status
+        });
+      
+        if (prod !== null && prod !== undefined) {
+          res.status(200).send({ resultado: 'ok', message: prod });
+        } else {
+          res.status(404).send({ resultado: 'Not Found', message: 'Producto no encontrado' });
+        }
+      } catch (error) {
+        res.status(400).send({ error: `Error al actualizar productos: ${error}` });
+      }
+      
+      
 }); 
 
 
-productRouter.delete("/:id", async (req, res)=>{
-    const {id} = req.params;
+productRouter.delete("/:pid", async (req, res)=>{
+    const {pid} = req.params;
     
     try {
-        const respuesta = await productsModel.findByIdAndDelete(id );
+        const prod = await productsModel.findByIdAndDelete(pid);
         
         if (prod)
-            res.status(200).send({resultado: 'ok', message: respuesta });
+            res.status(200).send({resultado: 'ok', message: prod });
         else
-        res.status(404).send({resultado: 'Not Found', message: res });
+        res.status(404).send({resultado: 'Not Found', message: prod });
     
 }catch (error){
     res.status(400).send({error: `Error al eliminar productos: ${error}`});

@@ -1,24 +1,26 @@
 import express from 'express';
 import mongoose from 'mongoose';
-// import multer from 'multer';
-
-import productRouter from './router/product.routes.js';
-import cartRouter from './router/carts.routes.js'; 
-// import  ProductManager from './controllers/ProductManager.js';
-
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io';
 import { __dirname } from './path.js';
 import path from 'path';
+// import multer from 'multer';
 
+import userRouter from './router/user.routes.js';
+import productRouter from './router/product.routes.js';
+import cartRouter from './router/carts.routes.js'; 
+import messageRouter from './router/messages.routes.js';
+// import  ProductManager from './controllers/ProductManager.js';
+
+
+const app = express();
 const PORT = 4000;
 // const productManager = new ProductManager('./src/models/products.json');
 
-mongoose.connect(' URL DE MONGO')
+//conexion a atlas
+mongoose.connect('mongodb+srv://santiagosordi:Sds31263550@cluster0.l8imdid.mongodb.net/?retryWrites=true&w=majority')
     .then (()=> console.log('BDD conectada'))
     .catch((error)=> console.log("Error en conexion con MongoDB ATLAS: ", error));
-
-const app = express();
 
 //Server
 const server = app.listen(PORT, ()=>{
@@ -49,14 +51,15 @@ io.on("connection", (socket)=>{
         await productManager.addProducts(product);
         const products = await productManager.getProducts();
         socket.emit('products', products);
-    });
-    
+    });    
 });
 
 //Routes
 app.use('/static', express.static (path.join(__dirname, '/public')));
 app.use('/api/products', productRouter); //aca se enlaza la ruta al use
-app.use('/api/cart', cartRouter);
+app.use('/api/carts', cartRouter);
+app.use('/api/users', userRouter);
+app.use('/api/message', messageRouter );
 
 app.get('/static', (req, res) => {
     res.render('index', {
