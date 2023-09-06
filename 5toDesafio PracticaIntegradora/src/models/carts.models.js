@@ -6,11 +6,11 @@ const cartScehma = new Schema({
             id_prod: {
                 type: Schema.Types.ObjectId, // Es un id autogerado por MongoDB
                 ref: 'products',
-                require:true
+                required:true
             },
             quantity:{
                 type: Number, 
-                require: true //si no agrega la cantidad tengo que agregar default: 1
+                required: true //si no agrega la cantidad tengo que agregar default: 1
             }
         }]
 });

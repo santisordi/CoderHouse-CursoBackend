@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import CartManager from '../controllers/CartManager.js';
 import cartModel from '../models/carts.models.js';
+// import CartManager from '../controllers/CartManager.js';
 
 const cartRouter = Router();
-const carts = new CartManager;
+// const carts = new CartManager;
 
 cartRouter.get('/', async (req, res) => {
     const {limit} = req.query
@@ -16,7 +16,7 @@ cartRouter.get('/', async (req, res) => {
     }
 } );
 
-cartModel.get('/:cid', async (req, res) => {
+cartRouter.get('/:cid', async (req, res) => {
     const { cid } = req.params;
     try{
         const cart = await cartModel.findById(cid);
@@ -28,7 +28,7 @@ cartModel.get('/:cid', async (req, res) => {
     }
 });
 
-cartModel.post('/', async (req, res)=> {
+cartRouter.post('/', async (req, res)=> {
     const {id_prod, quantity} = req.body;
 
     try{
@@ -44,7 +44,7 @@ cartModel.post('/', async (req, res)=> {
     }
 });
 
-cartModel.update('/:cid', async (req, res) => {
+cartRouter.put('/:cid', async (req, res) => {
     const {cid} = req.params;
     const {id_prod, quantity} =req.body;
 
@@ -60,7 +60,7 @@ cartModel.update('/:cid', async (req, res) => {
     };
 });
 
-cartModel.deleteMany('/:cid', (req, res) => {
+cartRouter.delete('/:cid', async (req, res) => {
     const { cid } = req.params;
     try{
         const cart = await cartModel.findByIdAndDelete(cid);

@@ -2,10 +2,10 @@ import { Router } from 'express';
 import productsModel from '../models/products.model.js';
 // import ProductManager from '../controllers/ProductManager.js';
 
-const ProductRouter = Router();
+const productRouter = Router();
 // const product = new ProductManager();
 
-ProductRouter.get("/", async (req, res)=>{
+productRouter.get("/", async (req, res)=>{
     const {limit} = req.query;
     try {
         const prod = await productsModel.find().limit(limit);     
@@ -15,7 +15,7 @@ ProductRouter.get("/", async (req, res)=>{
     };
 }); 
 
-ProductRouter.get("/:id", async (req, res)=>{
+productRouter.get("/:id", async (req, res)=>{
     const {id} = req.params;
     try {
         const prod = await productsModel.findById(id);
@@ -29,7 +29,7 @@ ProductRouter.get("/:id", async (req, res)=>{
     };
 }); 
 
-ProductRouter.post("/", async (req, res)=>{
+productRouter.post("/", async (req, res)=>{
     const { title, description, stock, code, price, category } = req.body;
     
     try {
@@ -42,7 +42,7 @@ ProductRouter.post("/", async (req, res)=>{
     };
 }); 
 
-ProductRouter.update("/:id", async (req, res)=>{
+productRouter.put("/:id", async (req, res)=>{
     const {id} = req.params
     const { title, description, stock, code, price, category, status } = req.body;
     
@@ -61,7 +61,7 @@ ProductRouter.update("/:id", async (req, res)=>{
 }); 
 
 
-ProductRouter.delete("/:id", async (req, res)=>{
+productRouter.delete("/:id", async (req, res)=>{
     const {id} = req.params;
     
     try {
