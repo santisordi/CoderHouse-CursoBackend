@@ -5,6 +5,8 @@ import { Server } from 'socket.io';
 import { __dirname } from './path.js';
 import path from 'path';
 // import multer from 'multer';
+import { userModel } from './models/users.model.js';
+import cartModel from './models/carts.models.js';
 
 import userRouter from './router/user.routes.js';
 import productRouter from './router/product.routes.js';
@@ -16,8 +18,16 @@ const PORT = 4000;
 
 //conexion a atlas
 mongoose.connect('mongodb+srv://santiagosordi:Sds31263550@cluster0.l8imdid.mongodb.net/?retryWrites=true&w=majority')
-    .then (()=> console.log('BDD conectada'))
+    .then (async () => {
+        console.log('BDD conectada')
+        // await cartModel.create({})
+    })
     .catch((error)=> console.log("Error en conexion con MongoDB ATLAS: ", error));
+
+    // const resultado = await userModel.find({name: 'Ofelia'}).explain('executionStats');
+    // console.log(resultado)
+
+
 
 //Server
 const server = app.listen(PORT, ()=>{
@@ -43,7 +53,7 @@ io.on("connection", (socket)=>{
     socket.on ('mensaje', info =>{
         console.log(info);
         mensajes.push(info);
-        io.emit('mensaje', mensajes); // emito el array de mensajes
+        io.emit('mensajes', mensajes); // emito el array de mensajes
     })
     
     // socket.on('load', async () => {
@@ -87,7 +97,7 @@ app.get('/static/realtimeproducts', (req, res) => { //HBS
 app.get ('/static/chat', (req, res) => {
     res.render('chat', {
     rutaCSS: 'chat',
-    rutaJS: 'chat'
+    rutaJS: 'chat',
     });
 });
 

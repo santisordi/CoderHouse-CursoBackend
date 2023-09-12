@@ -16,7 +16,7 @@ form.addEventListener('submit', event => {
            mensaje
         );
     })
-    e.target.reset();
+    event.target.reset();
 });
 
 

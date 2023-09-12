@@ -42,6 +42,14 @@ cartRouter.post('/', async (req, res)=> {
     }
 });
 
+cartRouter.post('/:cid/products/:pid', async (req, res)=>{
+    try {
+        
+    } catch (e) {
+        
+    }
+});
+
 cartRouter.put('/:cid', async (req, res) => {
     const {cid} = req.params;
     const {id_prod, quantity} =req.body;
