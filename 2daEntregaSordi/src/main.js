@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import { engine } from 'express-handlebars';
@@ -5,9 +6,9 @@ import { Server } from 'socket.io';
 import { __dirname } from './path.js';
 import path from 'path';
 // import multer from 'multer';
-import { userModel } from './models/users.model.js';
+// import { userModel } from './models/users.model.js';
 import cartModel from './models/carts.models.js';
-import orderModel from './m odels/order.model.js';
+import productModel from './models/products.model.js';
 
 import userRouter from './router/user.routes.js';
 import productRouter from './router/product.routes.js';
@@ -18,18 +19,11 @@ const app = express();
 const PORT = 4000;
 
 //conexion a atlas
-mongoose.connect('mongodb+srv://santiagosordi:Sds31263550@cluster0.l8imdid.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGO_URL)
     .then (async () => {
         console.log('BDD conectada')
-        const cart = await cartModel.findOne({ _id: '6500b6b5f76514ac70fae988'})
-        console.log(JSON.stringify(cart))
     })
     .catch((error)=> console.log("Error en conexion con MongoDB ATLAS: ", error));
-
-    // const resultado = await userModel.find({name: 'Ofelia'}).explain('executionStats');
-    // console.log(resultado)
-
-
 
 //Server
 const server = app.listen(PORT, ()=>{

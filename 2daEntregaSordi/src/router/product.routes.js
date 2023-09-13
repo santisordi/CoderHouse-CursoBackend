@@ -3,15 +3,27 @@ import productsModel from '../models/products.model.js';
 
 const productRouter = Router();
 
-productRouter.get("/", async (req, res)=>{
-    const {limit} = req.query;
+productRouter.get('/', async (req, res) => {
+    let { limit, page, category, status, sort } = req.query
+    let sortOption;
+	sort == 'asc' && (sortOption = 'price');
+	sort == 'desc' && (sortOption = '-price');
     try {
-        const prod = await productsModel.find().limit(limit);     
-        res.status(200).send({resultado: 'ok', message: prod });
-    }catch (error){
-         res.status(400).send({error: `Error al consultar productos: ${error}`});
-    };
-}); 
+        const options = {
+            limit: limit || 10,
+            page: page || 1,
+            sort: sortOption || null,
+        };
+        const query = {};
+            category && (query.category = category);
+            status && (query.status = status);
+        
+        const prods = await productsModel.paginate(query, options)
+        res.status(200).send({ result: 'OK', message: prods })
+    } catch (error) {
+        res.status(400).send({ error: `Error displaying products:  ${error}` })
+    }
+})
 
 productRouter.get("/:pid", async (req, res)=>{
     const {pid} = req.params;
