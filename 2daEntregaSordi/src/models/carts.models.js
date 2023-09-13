@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 
 const cartSchema = new Schema({
-	products: {
 		products: {
 			type: [
 					{
@@ -19,9 +18,12 @@ const cartSchema = new Schema({
 				default: function () {
 					return [];
 				},
-			},
-		}
-	});
-const cartModel = model('carts', cartSchema);
+			}		
+		});
 
+		cartSchema.pre('findOne', function () {
+			this.populate('products.id_prod')		
+		});
+
+const cartModel = model('carts', cartSchema);
 export default cartModel;

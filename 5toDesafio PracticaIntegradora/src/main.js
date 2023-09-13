@@ -18,7 +18,7 @@ const PORT = 4000;
 // const productManager = new ProductManager('./src/models/products.json');
 
 //conexion a atlas
-mongoose.connect('mongodb+srv://santiagosordi:Sds31263550@cluster0.l8imdid.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://:@cluster0.l8imdid.mongodb.net/?retryWrites=true&w=majority')
     .then (()=> console.log('BDD conectada'))
     .catch((error)=> console.log("Error en conexion con MongoDB ATLAS: ", error));
 

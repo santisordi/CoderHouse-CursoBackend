@@ -43,11 +43,18 @@ cartRouter.post('/', async (req, res)=> {
 });
 
 cartRouter.post('/:cid/products/:pid', async (req, res)=>{
+    const { cid, pid } = req.params;
+    const { quantity } = req.body;
     try {
-        
-    } catch (e) {
-        
-    }
+        const cart = await cartModel.findById(cid);
+        if (cart) {
+            cart.products.products.push({ id_prod: pid, quantity: quantity });// si existo le agrego un producto agregando la ref de id
+            const respuesta = await cartModel.findByIdAndUpdate( cid, cart ); // actualizo carrito de mi BDD
+            res.status(200).send({ respuesta: 'OK', mesnaje: respuesta});
+        };      
+    } catch (error) {
+        res.status(400).send({ error:error });
+    };
 });
 
 cartRouter.put('/:cid', async (req, res) => {
