@@ -7,8 +7,6 @@ import { __dirname } from './path.js';
 import path from 'path';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
-import cartModel from './models/carts.models.js';
-import productModel from './models/products.model.js';
 
 import userRouter from './router/user.routes.js';
 import productRouter from './router/product.routes.js';
