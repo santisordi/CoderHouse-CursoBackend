@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import express from 'express';
-import mongoose from 'mongoose';
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io';
 import { __dirname } from './path.js';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import session from 'express-session'
+import mongoose from 'mongoose';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
 
@@ -15,7 +15,7 @@ import userRouter from './router/user.routes.js';
 import productRouter from './router/product.routes.js';
 import cartRouter from './router/carts.routes.js'; 
 import messageRouter from './router/messages.routes.js';
-
+import staticsRouter from './router/statics.routes.js';
 
 const app = express();
 const PORT = 4000;
@@ -39,6 +39,16 @@ const io = new Server(server);
 app.use(express.json());
 app.use(cookieParser(process.env.SIGNED_COOKIE));//se firma la cookie para q no puedan modificarla
 app.use(express.urlencoded({extended: true}));
+app.use(session({ //Config session en app en mongo
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL, 
+        mongoOptions : {useNewUrlParser: true, useUnifiedTopology: true},// cuando conecto mi app me permite trabajar con el controlador oficial, se adapta a los nuevos cambios cuando trabjo con clusters. una topologia unifi  cada.
+        ttl: 60 //time to live en seg
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true
+}));
 app.engine('handlebars', engine()); //defino que trabajo con habndlebars y guardo config de engine
 app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views')); //esta es otra forma de trabajar con rutas
@@ -49,19 +59,12 @@ app.use(session({
     saveUninitialized: true    
 }));
 
-function auth (req, res, next) {
+function auth (req, res, next) { //middle de ruta admin
     console.log(req.session.email);
-    if(req.session.email == "admin@admin.com") {
-        return next(); // continua con la ejecucion normal
+    if(req.session.email == "admin@admin.com" && req.session.password == "1234") {
+        return next(); // continua con la ejecucion normal de la ruta
     } return res.send ("No tenes acceso a este contenido");
 }
-// app.use(Session({ //Config session en app en mongo
-//     store: MongoStore.create({
-//         mongoURL: process.env.MONGO_URL, 
-//         mongoOptions: {useNewUrlParse: true, useUnifiedTopology: true},// cuando conecto mi app me permite trabajar con el controlador oficial, se adapta a los nuevos cambios cuando trabjo con clusters. una topologia unificada.
-//         ttl: 90 //time to live en seg
-//     })
-// }))
 
 const mensajes = [];
 //Conexion Socket.io
@@ -72,8 +75,7 @@ io.on("connection", (socket)=>{
         console.log(info);
         mensajes.push(info);
         io.emit('mensajes', mensajes); // emito el array de mensajes
-    })
-    
+    })   
     // socket.on('load', async () => {
     //     const products = await productManager.getProducts();
     //     socket.emit('products', products);
@@ -90,55 +92,21 @@ io.on("connection", (socket)=>{
         socket.emit('mensajeProductoCreado', 'Prodcuto creado correctamente')
     });
 });
-
 //Routes
 app.use('/static', express.static (path.join(__dirname, '/public')));
 app.use('/api/products', productRouter); //aca se enlaza la ruta al use
 app.use('/api/carts', cartRouter);
 app.use('/api/users', userRouter);
 app.use('/api/message', messageRouter );
+app.use('/', staticsRouter);
 
-app.get('/static', (req, res) => {
-    res.render('index', {
-        rutaCSS: 'index',
-        rutaJS: 'index',
-    });
-});
-
-app.get('/static/realtimeproducts', (req, res) => { //HBS  
-    res.render('realTimeProducts', { 
-        rutaCSS: "realTimeProducts",
-        rutaJS: "realTimeProducts"
-    });    
-});
-
-app.get ('/static/chat', (req, res) => {
-    res.render('chat', {
-    rutaCSS: 'chat',
-    rutaJS: 'chat',
-    });
-});
-
-app.get('/static/products', (req, res) => {
-	res.render('products', {
-		rutaCSS: 'products',
-		rutaJS: 'products',
-	});
-});
-
-app.get('/static/carts/:cid', (req, res) => {
-	res.render('carts', {
-		rutaCSS: 'carts',
-		rutaJS: 'carts',
-	});
-});
 
 app.get('/setCookie', (req, res)=> {
         res.cookie('CookieCookie', 'Esto es el valor de una cookie', {maxAge: 6000, signed:true}).send('Cookie creada');
 });
 
 app.get('/getCookie', (req,res)=>{
-    res.send(req.signedCookies)//consulta solo las firmada    
+    res.send(req.signedCookies);//consulta solo las firmada    
     // res.send(req.cookies); //consulta todas las cookies
 });
 
@@ -147,23 +115,20 @@ app.get ('/session', (req, res)=> {
         req.session.counter ++;
         res.send(`Has entrado ${req.session.counter} veces a mi pagina`)
     } else {
-        req.session.counter = 1;
+        req.session.counter = 1; 
         res.send("Hola, por primera vez");
     };
-})
+});
 
 app.get ('/login', (req,res)=>{
-    const{ email, password } = req.body;
-    if(email === "admin@admin.com" && password ==="1234") {
+    const{ email, password } = req.body;  
         req.session.email = email;
         req.session.password = password;
-
         return res.send ("Usuario Logeado");
-    }   return res.send ("Login Fallido")
-}),
-
+});
+//ruta para verificar si usuario es adm o no
 app.get('/admin', auth, (req, res) => {
-        res.send("sos admin")
+        res.send("sos admin");
 });
 
 app.get('/logout', (req,res)=> {
