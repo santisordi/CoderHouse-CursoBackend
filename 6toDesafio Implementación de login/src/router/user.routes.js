@@ -7,8 +7,8 @@ userRouter.get('/', async (req, res) => {
     try {
         const users = await userModel.find();
         res.status(200).send(users);
-    } catch (error) {
-        res.status(400).send('Error al consultar usuario: ', error);        
+    } catch (e) {
+        res.status(400).send('Error al consultar usuario: ', e);        
     };
  });
 
@@ -18,9 +18,10 @@ userRouter.get('/', async (req, res) => {
         const resultado = await userModel.create({
             first_name, last_name, age, password, email
         });
-        res.status(200).send({mensaje:"Usuario creado", respuesta: response });
-    } catch (error) {
-        res.status(400).send('Error al crear usuario: ', error);          
+        res.status(200).send({mensaje:"Usuario creado", respuesta: resultado });
+        console.log(resultado)
+    } catch (e) {
+        res.status(400).send('Error al crear usuario: ', e);          
     };
   });
 

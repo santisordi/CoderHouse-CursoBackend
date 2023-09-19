@@ -16,6 +16,8 @@ import productRouter from './router/product.routes.js';
 import cartRouter from './router/carts.routes.js'; 
 import messageRouter from './router/messages.routes.js';
 import staticsRouter from './router/statics.routes.js';
+import sessionRouter from './router/sessions.routes.js';
+
 
 const app = express();
 const PORT = 4000;
@@ -98,6 +100,7 @@ app.use('/api/products', productRouter); //aca se enlaza la ruta al use
 app.use('/api/carts', cartRouter);
 app.use('/api/users', userRouter);
 app.use('/api/message', messageRouter );
+app.use('/api/sessions', sessionRouter );
 app.use('/', staticsRouter);
 
 

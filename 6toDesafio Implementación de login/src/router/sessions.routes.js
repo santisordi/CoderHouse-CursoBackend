@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { userModel } from "../models/users.model";
+import { userModel } from "../models/users.model.js";
 
 
-const routerSession = Router();
+const sessionRouter = Router();
  
-routerSession.post('login', async (req,res)=>{
+sessionRouter.post('/login', async (req,res)=>{
     const {email, password}= req.body;
 
     try {
@@ -27,10 +27,10 @@ routerSession.post('login', async (req,res)=>{
     };
 });
 
-routerSession.get('logout', (req,res)=>{
+sessionRouter.get('/logout', (req,res)=>{
     if(req.session.login){
         req.session.destroy();
     } res.status(200).send ({resyltado: 'Login Eliminado'});
 });
 
-export default routerSession;
+export default sessionRouter;
