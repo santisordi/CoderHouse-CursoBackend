@@ -12,7 +12,7 @@ userRouter.get('/', async (req, res) => {
     };
  });
 
- userRouter.post('/static/signin', async (req, res) => { 
+ userRouter.post('/signin', async (req, res) => { 
      const { first_name, last_name, age, password, email} = req.body;
 
     try {
@@ -22,7 +22,7 @@ userRouter.get('/', async (req, res) => {
         res.status(200).send({mensaje:"Usuario creado", respuesta: resultado });
         console.log(resultado)
     } catch (e) {
-        res.status(400).send('Error al crear usuario: ', e);          
+        res.status(400).send('Error al crear usuario: ' + e);          
     };
   });
 

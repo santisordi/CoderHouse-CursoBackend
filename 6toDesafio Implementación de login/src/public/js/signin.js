@@ -2,23 +2,18 @@ const signinForm = document.querySelector('#signinForm');
 
 signinForm.addEventListener('submit', async event => {
     event.preventDefault();
-    const dataForm = new FormData(event.target);
-    const data = Object.fromEntries(dataForm);
-    console.log(data)
-    try {
-        const response = await fetch('/api/signin',{
+    const dataForm = new FormData(signinForm);
+    const obj = {};
+    dataForm.forEach((value, key)=> obj[key]=value);
+
+    console.log(obj)
+    fetch('/api/users/signin',{
             method:'POST',
+            body:JSON.stringify(obj),
             headers:{
                 'Content-Type':'application/json'
             },
-            body:JSON.stringify(data),
-        });
-        if(response.status === 200){
-            const responseData = await response.json();
-        } else {
-            console.log('Error al crear usuario');
         }
-    } catch (error) {
-        console.log(error);
-    }
-});
+    ).then (result=>result.json())
+    .then(json=>console.log(json));
+})

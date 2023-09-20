@@ -92,13 +92,13 @@ io.on("connection", (socket)=>{
     });
 });
 //Routes
-app.use('/static', express.static (path.join(__dirname, '/public')));
+app.use('/static', express.static (path.join(__dirname, '/public')), staticsRouter);
 app.use('/api/products', productRouter); //aca se enlaza la ruta al use
 app.use('/api/carts', cartRouter);
 app.use('/api/users', userRouter);
 app.use('/api/message', messageRouter );
 app.use('/api/sessions', sessionRouter );
-app.use('/', staticsRouter);
+// app.use('/', staticsRouter);
 
 app.get('/setCookie', (req, res)=> {
         res.cookie('CookieCookie', 'Esto es el valor de una cookie', {maxAge: 6000, signed:true}).send('Cookie creada');
