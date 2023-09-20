@@ -17,6 +17,10 @@ import cartRouter from './router/carts.routes.js';
 import messageRouter from './router/messages.routes.js';
 import staticsRouter from './router/statics.routes.js';
 import sessionRouter from './router/sessions.routes.js';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2e28c29ff0795088175e489d2a03942019ca995a
 
 const app = express();
 const PORT = 4000;

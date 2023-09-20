@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, response } from "express";
 import { userModel } from "../models/users.model.js";
 
 const userRouter = Router();
@@ -13,7 +13,11 @@ userRouter.get('/', async (req, res) => {
  });
 
  userRouter.post('/', async (req, res) => { 
+<<<<<<< HEAD
      const { first_name, last_name, age, password, email} = req.body;
+=======
+     const { first_name, last_name, age, password, email} = req.body
+>>>>>>> 2e28c29ff0795088175e489d2a03942019ca995a
     try {
         const resultado = await userModel.create({
             first_name, last_name, age, password, email
