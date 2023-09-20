@@ -23,6 +23,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    rol:{
+        type:String,
+        default:'user'
+    },
     age: {
         type: Number,
         required: true,
