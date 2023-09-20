@@ -16,6 +16,7 @@ import productRouter from './router/product.routes.js';
 import cartRouter from './router/carts.routes.js'; 
 import messageRouter from './router/messages.routes.js';
 import staticsRouter from './router/statics.routes.js';
+import sessionRouter from './router/sessions.routes.js';
 
 const app = express();
 const PORT = 4000;
@@ -42,7 +43,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(session({ //Config session en app en mongo
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URL, 
-        mongoOptions : {useNewUrlParser: true, useUnifiedTopology: true},// cuando conecto mi app me permite trabajar con el controlador oficial, se adapta a los nuevos cambios cuando trabjo con clusters. una topologia unifi  cada.
         ttl: 60 //time to live en seg
     }),
     secret: process.env.SESSION_SECRET,
@@ -60,7 +60,6 @@ app.use(session({
 }));
 
 function auth (req, res, next) { //middle de ruta admin
-    console.log(req.session.email);
     if(req.session.email == "admin@admin.com" && req.session.password == "1234") {
         return next(); // continua con la ejecucion normal de la ruta
     } return res.send ("No tenes acceso a este contenido");
@@ -98,8 +97,8 @@ app.use('/api/products', productRouter); //aca se enlaza la ruta al use
 app.use('/api/carts', cartRouter);
 app.use('/api/users', userRouter);
 app.use('/api/message', messageRouter );
+app.use('/api/sessions', sessionRouter );
 app.use('/', staticsRouter);
-
 
 app.get('/setCookie', (req, res)=> {
         res.cookie('CookieCookie', 'Esto es el valor de una cookie', {maxAge: 6000, signed:true}).send('Cookie creada');
@@ -110,30 +109,30 @@ app.get('/getCookie', (req,res)=>{
     // res.send(req.cookies); //consulta todas las cookies
 });
 
-app.get ('/session', (req, res)=> {
-    if (req.session.counter) {
-        req.session.counter ++;
-        res.send(`Has entrado ${req.session.counter} veces a mi pagina`)
-    } else {
-        req.session.counter = 1; 
-        res.send("Hola, por primera vez");
-    };
-});
+// app.get ('/session', (req, res)=> {
+//     if (req.session.counter) {
+//         req.session.counter ++;
+//         res.send(`Has entrado ${req.session.counter} veces a mi pagina`)
+//     } else {
+//         req.session.counter = 1; 
+//         res.send("Hola, por primera vez");
+//     };
+// });
 
-app.get ('/login', (req,res)=>{
-    const{ email, password } = req.body;  
-        req.session.email = email;
-        req.session.password = password;
-        return res.send ("Usuario Logeado");
-});
+// app.get ('/login', (req,res)=>{
+//     const{ email, password } = req.body;  
+//         req.session.email = email;
+//         req.session.password = password;
+//         return res.send ("Usuario Logeado");
+// });
 //ruta para verificar si usuario es adm o no
 app.get('/admin', auth, (req, res) => {
         res.send("sos admin");
 });
 
-app.get('/logout', (req,res)=> {
-    req.session.destroy(()=>{
-        res.send("Salio de la sesion");
-    });
-});
+// app.get('/logout', (req,res)=> {
+//     req.session.destroy(()=>{
+//         res.send("Salio de la sesion");
+//     });
+// });
 

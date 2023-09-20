@@ -1,15 +1,18 @@
 import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
-    name: {
+    first_name: {
         type: String,
         required: true,
     },
-    username: {
+    last_name: {
         type: String,
         required: true,
     },
-    edad: Number,
+    age: {
+        type: Number,
+        required: true,
+    },
     email: {
         type: String,
         index: true,
@@ -22,4 +25,4 @@ const userSchema = new Schema({
     }
 });
 
-export const userModel = model('users', userSchema);  
+export const userModel = model('users', userSchema);

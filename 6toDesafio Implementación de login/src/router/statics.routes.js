@@ -37,4 +37,25 @@ staticsRouter.get('/static/carts/:cid', (req, res) => {
     });
 });
 
+staticsRouter.get('/static/login', (req, res) => {
+    res.render('login', {
+        rutaCSS: 'login',
+        rutaJS: 'login',
+    });
+});
+
+staticsRouter.get('/static/signin', (req, res) => {
+    res.render('signin', {
+        rutaCSS: 'signin',
+        rutaJS: 'signin',
+    });
+});
+
+staticsRouter.get('/static/profile', (req, res) => {
+    res.render('profile', {
+        rutaCSS: 'profile',
+        rutaJS: 'profile',
+    });
+});
+
 export default staticsRouter;

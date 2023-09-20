@@ -1,0 +1,10 @@
+ <h1>Perfil User</h1>
+    {{#if user}}
+        <p>Nombre: {{user.first_name}}</p>
+        <p>Apellido: {{user.last_name}}</p>
+        <p>Edad: {{user.age}}</p>
+        <p>Correo Electrónico: {{user.email}}</p>
+    {{else}}
+        <p>No has iniciado sesión.</p>
+    {{/if}}
+    <button>Cerrar Sesion</button>
