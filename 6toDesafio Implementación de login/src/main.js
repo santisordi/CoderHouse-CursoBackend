@@ -98,7 +98,6 @@ app.use('/api/carts', cartRouter);
 app.use('/api/users', userRouter);
 app.use('/api/message', messageRouter );
 app.use('/api/sessions', sessionRouter );
-// app.use('/', staticsRouter);
 
 app.get('/setCookie', (req, res)=> {
         res.cookie('CookieCookie', 'Esto es el valor de una cookie', {maxAge: 6000, signed:true}).send('Cookie creada');
@@ -107,6 +106,10 @@ app.get('/setCookie', (req, res)=> {
 app.get('/getCookie', (req,res)=>{
     res.send(req.signedCookies);//consulta solo las firmada    
     // res.send(req.cookies); //consulta todas las cookies
+});
+
+app.get('/admin', auth, (req, res) => {
+    res.send("sos admin");
 });
 
 // app.get ('/session', (req, res)=> {
@@ -126,10 +129,6 @@ app.get('/getCookie', (req,res)=>{
 //         return res.send ("Usuario Logeado");
 // });
 //ruta para verificar si usuario es adm o no
-app.get('/admin', auth, (req, res) => {
-        res.send("sos admin");
-});
-
 // app.get('/logout', (req,res)=> {
 //     req.session.destroy(()=>{
 //         res.send("Salio de la sesion");

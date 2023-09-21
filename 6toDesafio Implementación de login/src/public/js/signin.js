@@ -1,19 +1,35 @@
+
 const signinForm = document.querySelector('#signinForm');   
 
-signinForm.addEventListener('submit', async event => {
-    event.preventDefault();
+signinForm.addEventListener('submit', e => {
+    e.preventDefault();
+
     const dataForm = new FormData(signinForm);
+    
     const obj = {};
     dataForm.forEach((value, key)=> obj[key]=value);
-
-    console.log(obj)
-    fetch('/api/users/signin',{
+    fetch('/api/users/',{
             method:'POST',
             body:JSON.stringify(obj),
             headers:{
                 'Content-Type':'application/json'
             },
         }
-    ).then (result=>result.json())
-    .then(json=>console.log(json));
+    ).then(result => {
+        if (result.status === 200) {
+            Swal.fire({
+                title: 'Usuario Creado!',
+                icon: 'success'
+            })
+                .then(() => {
+                    window.location.replace('/static/login');
+                });
+        } else {
+            Swal.fire({
+                title: 'Error al crear Usuario',
+                icon: 'error'
+            })
+        };
+    });
+    e.target.reset();
 })
