@@ -44,7 +44,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(session({ //Config session en app en mongo
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URL, 
-        ttl: 60 //time to live en seg
+        ttl: 200 //time to live en seg
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
