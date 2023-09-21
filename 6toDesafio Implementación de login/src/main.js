@@ -17,6 +17,7 @@ import cartRouter from './router/carts.routes.js';
 import messageRouter from './router/messages.routes.js';
 import staticsRouter from './router/statics.routes.js';
 import sessionRouter from './router/sessions.routes.js';
+import profileRouter from './router/profile.routes.js';
 
 const app = express();
 const PORT = 4000;
@@ -46,8 +47,8 @@ app.use(session({ //Config session en app en mongo
         ttl: 60 //time to live en seg
     }),
     secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false
 }));
 app.engine('handlebars', engine()); //defino que trabajo con habndlebars y guardo config de engine
 app.set('view engine', 'handlebars');
@@ -55,8 +56,8 @@ app.set('views', path.resolve(__dirname, './views')); //esta es otra forma de tr
 // const upload = multer({ storage: storage});
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true    
+    resave: false,
+    saveUninitialized: false    
 }));
 
 function auth (req, res, next) { //middle de ruta admin
@@ -98,6 +99,7 @@ app.use('/api/carts', cartRouter);
 app.use('/api/users', userRouter);
 app.use('/api/message', messageRouter );
 app.use('/api/sessions', sessionRouter );
+app.use('/api/profile', profileRouter);
 
 app.get('/setCookie', (req, res)=> {
         res.cookie('CookieCookie', 'Esto es el valor de una cookie', {maxAge: 6000, signed:true}).send('Cookie creada');

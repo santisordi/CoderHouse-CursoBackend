@@ -8,12 +8,14 @@ sessionRouter.post('/login', async (req, res) => {
 
     try {
         if (req.session.login)
-            res.status(200).send({ resultado: 'Login ya existente' })
-        const user = await userModel.findOne({ email: email })
+            res.status(400).send({ resultado: 'Login ya existente' })
+            
+            const user = await userModel.findOne({ email: email })
 
         if (user) {
             if (user.password == password) {
-                req.session.login = true
+                req.session.login = true;
+                req.session.email = user.email;
                 res.status(200).send({ resultado: 'Login valido', message: user })
                 //res.redirect('ruta', 200, {'info': user}) Redireccion
             } else {

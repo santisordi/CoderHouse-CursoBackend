@@ -20,5 +20,5 @@ socket.on('products', products => {
         </div>
     
         `;
-	});
+	})
 });

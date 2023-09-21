@@ -3,9 +3,9 @@ import { Router } from "express";
 const staticsRouter = Router();
 
 staticsRouter.get('/', (req, res) => {
-    res.render('index', {
-        rutaCSS: 'index',
-        rutaJS: 'index',
+    res.render('products', {
+        rutaCSS: 'products',
+        rutaJS: 'products',
     });
 });
 
