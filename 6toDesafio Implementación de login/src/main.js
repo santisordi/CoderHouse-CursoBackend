@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import express from 'express';
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io';
@@ -7,7 +6,8 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import mongoose from 'mongoose';
+import mongoConnect from './dataBase.js';
+
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
 
@@ -21,14 +21,8 @@ import profileRouter from './router/profile.routes.js';
 
 const app = express();
 const PORT = 4000;
-
 //conexion a atlas
-mongoose.connect(process.env.MONGO_URL)
-    .then (async () => {
-        console.log('BDD conectada')
-    })
-    .catch((error)=> console.log("Error en conexion con MongoDB ATLAS: ", error));
-
+mongoConnect();
 //Server
 const server = app.listen(PORT, ()=>{
     console.log(`Servidor Express Puerto ${PORT}`);
@@ -100,40 +94,4 @@ app.use('/api/users', userRouter);
 app.use('/api/message', messageRouter );
 app.use('/api/sessions', sessionRouter );
 app.use('/api/profile', profileRouter);
-
-app.get('/setCookie', (req, res)=> {
-        res.cookie('CookieCookie', 'Esto es el valor de una cookie', {maxAge: 6000, signed:true}).send('Cookie creada');
-});
-
-app.get('/getCookie', (req,res)=>{
-    res.send(req.signedCookies);//consulta solo las firmada    
-    // res.send(req.cookies); //consulta todas las cookies
-});
-
-app.get('/admin', auth, (req, res) => {
-    res.send("sos admin");
-});
-
-// app.get ('/session', (req, res)=> {
-//     if (req.session.counter) {
-//         req.session.counter ++;
-//         res.send(`Has entrado ${req.session.counter} veces a mi pagina`)
-//     } else {
-//         req.session.counter = 1; 
-//         res.send("Hola, por primera vez");
-//     };
-// });
-
-// app.get ('/login', (req,res)=>{
-//     const{ email, password } = req.body;  
-//         req.session.email = email;
-//         req.session.password = password;
-//         return res.send ("Usuario Logeado");
-// });
-//ruta para verificar si usuario es adm o no
-// app.get('/logout', (req,res)=> {
-//     req.session.destroy(()=>{
-//         res.send("Salio de la sesion");
-//     });
-// });
 
