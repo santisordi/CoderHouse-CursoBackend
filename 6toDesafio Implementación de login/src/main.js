@@ -1,10 +1,10 @@
 import express from 'express';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import { engine } from 'express-handlebars';
 import { Server } from 'socket.io';
 import { __dirname } from './path.js';
 import path from 'path';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import mongoConnect from './dataBase.js';
 

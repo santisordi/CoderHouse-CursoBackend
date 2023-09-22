@@ -25,19 +25,14 @@ staticsRouter.get('/chat', (req, res) => {
 });
 
 staticsRouter.get('/products', async (req, res) => {
-    try {
-        // Aquí debes obtener los datos de productos desde tu base de datos
-        const products = await productsModel.find();
-
-        res.render('products', {
-            rutaCSS: 'products',
-            rutaJS: 'products',
-            products: products, // Pasa los datos de productos a la vista
-        });
-    } catch (error) {
-        console.error('Error al obtener datos de productos:', error);
-        res.status(500).send('Error interno del servidor');
-    }
+    const products = await productsModel.find().lean();
+    const info = req.query.info;
+	res.render('products', {
+		rutaCSS: 'products',
+		rutaJS: 'products',
+        products,
+        info
+	});
 });
 
 staticsRouter.get('/carts/:cid', (req, res) => {
