@@ -5,9 +5,10 @@ import bcrypt from 'bcrypt';
 export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(parseInt(process.env.SALT)));
 
 const hashPasword = createHash('Coder');
-console.log(hashPasword )
+// console.log(hashPasword )
+
 //Validar contraseña encriptada
 export const validatePassword = (passwordSend, passwordBDD) => bcrypt.compareSync(passwordSend, passwordBDD);
 
-console.log(validatePassword('Coder', hashPasword ))
+// console.log(validatePassword('Coder', hashPasword ))
 

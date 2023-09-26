@@ -7,6 +7,8 @@ import { __dirname } from './path.js';
 import path from 'path';
 import MongoStore from 'connect-mongo';
 import mongoConnect from './dataBase.js';
+import passport from 'passport';
+import initializePassport from './config/passport.js';
 
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
@@ -50,15 +52,12 @@ app.set('views', path.resolve(__dirname, './views')); //esta es otra forma de tr
 // const upload = multer({ storage: storage});
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false    
+    resave: false, //Permite que la sesion permanezca activa en caso de estar inactivo. Con false muere la sesión
+    saveUninitialized: false //Permite guardar cualquier sesion aun cuando el objeto de sesion no tengo nada por contener   
 }));
-
-function auth (req, res, next) { //middle de ruta admin
-    if(req.session.email == "admin@admin.com" && req.session.password == "1234") {
-        return next(); // continua con la ejecucion normal de la ruta
-    } return res.send ("No tenes acceso a este contenido");
-}
+initializePassport(); // se aplica esta estrategia de login 
+app.use(passport.initialize()); //se inicializa passport
+app.use(passport.session()); //se inicializa para trabajar con las sesiones de mis usuarios
 
 const mensajes = [];
 //Conexion Socket.io

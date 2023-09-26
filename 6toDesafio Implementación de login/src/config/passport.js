@@ -1,8 +1,7 @@
 import local from "passport-local"; //estrategia elegida
 import passport from "passport"; //handler de estrategia
-import { createHash, validatePassword } from "../utils/bcrypt";
-import { userModel } from "../models/users.model";
-
+import { createHash, validatePassword } from "../utils/bcrypt.js";
+import { userModel } from "../models/users.model.js";
 
  //Defino estrategia (los mensajes de error se manejan en la ruta, aca se ven los msj html )
  const LocalStrategy = local.Strategy;
@@ -41,8 +40,18 @@ import { userModel } from "../models/users.model";
    //manejo el login
    passport.use('login', new LocalStrategy({ usernameField: 'email'}, async (username, password, done) => {
       try {
-         
+         const user = await userModel.findOne({ email: email });
+         if (!user) {
+            return done (null, false);
+         }
+         if (validatePassword(password, user.password)) { // compara la contraseña ingresada con la BDD
+            return done (null, user) 
+         }
+         return done (null, false) // contraseña no valida con la de BDD  
       } catch (error) {
-         
-      }
-   }))
+         return done (error)
+      };
+   }));
+};
+
+export default initializePassport;
