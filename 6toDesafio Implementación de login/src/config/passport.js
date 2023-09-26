@@ -37,5 +37,12 @@ import { userModel } from "../models/users.model";
    passport.deserializeUser(async (id, done)=>{
       const user = await userModel.findById(id);
       done (null, user);
-   });
- };
+   });   
+   //manejo el login
+   passport.use('login', new LocalStrategy({ usernameField: 'email'}, async (username, password, done) => {
+      try {
+         
+      } catch (error) {
+         
+      }
+   }))
