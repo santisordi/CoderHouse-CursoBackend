@@ -1,7 +1,5 @@
 import { Router } from "express";
 import passport from "passport";
-import { validatePassword } from "../utils/bcrypt.js";
-// import { userModel } from "../models/users.model.js";
 
 const sessionRouter = Router();
  //Ruta para crear el login del usuario con passport
@@ -22,12 +20,21 @@ sessionRouter.post('/login', passport.authenticate('login'), (req, res) => {
   };
 });
 
+sessionRouter.get('/github', passport.authenticate('github', {scope: ['user:email']}), async (req, res)=>{
+  res.status(200).send({mensaje: "Usuario Creado"});
+});
+
+sessionRouter.get('/githubSession', passport.authenticate('github', {scope: ['user:email']}), async (req, res)=>{
+  req.session.user = req.user
+  res.status(200).send({mensaje: "Session created"});
+});
+
 sessionRouter.get('/logout', (req, res) => {
     if (req.session.login) {
-        req.session.destroy()
+        req.session.destroy();
     }
-    res.status(200).send({ resultado: 'Login eliminado' })
-})
+    res.status(200).send({ resultado: 'Login eliminado' });
+});
 
 export default sessionRouter;
 

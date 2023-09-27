@@ -93,4 +93,6 @@ app.use('/api/users', userRouter);
 app.use('/api/message', messageRouter );
 app.use('/api/sessions', sessionRouter );
 app.use('/api/profile', profileRouter);
-
+app.get('/*',(req,res)=>{   //Ruta con error 404 que se utiliza a nivel general
+    res.send("Error 404: Page not found");
+})

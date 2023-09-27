@@ -1,14 +1,17 @@
 import local from "passport-local"; //estrategia elegida
 import passport from "passport"; //handler de estrategia
+import GithubStrategy from 'passport-github2';
 import { createHash, validatePassword } from "../utils/bcrypt.js";
 import { userModel } from "../models/users.model.js";
 
  //Defino estrategia (los mensajes de error se manejan en la ruta, aca se ven los msj html )
  const LocalStrategy = local.Strategy;
+ //Función de mi estrategia
  const initializePassport = () => {
-    //register del usuario
+   //done es como si fuese un res.status(),el callback de respuesta. 
+    //Acá defino qué y en qué ruta voy a utilizar mi estrategia
     passport.use('register', new LocalStrategy(
-         {passReqToCallback: true, usernameField:'email'}, async (req, username, passport, done) => {
+         {passReqToCallback: true, usernameField:'email'}, async (req, username, password, done) => {
             //defino como registrar un usuario
             const {first_name, last_name, email, age} = req.body;
             try {
@@ -28,6 +31,51 @@ import { userModel } from "../models/users.model.js";
             }
          }
     ));
+   
+   //manejo el login
+   passport.use('login', new LocalStrategy({ usernameField: 'email'}, async (username, password, done) => {
+      try {
+         const user = await userModel.findOne({ email: username });
+          //Consulto por un Login. Si éste no existe, retorno null y false
+         if (!user) {
+            return done (null, false);
+         }//SI existe el usuario, compruebo que la contraseña sea valida
+         if (validatePassword(password, user.password)) { // compara la contraseña ingresada con la BDD
+            return done (null, user) 
+         }
+         return done (null, false) // contraseña no valida con la de BDD  
+      } catch (error) {
+         return done (error)
+      };
+   }));
+   
+   //github strategy
+   passport.use('github', new GithubStrategy({
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL: process.env.CALLBACK_URL
+ 
+   }, async (accesToken, refreshToken, profile, done)=>{ //es para registrarse
+      console.log(accesToken);
+      console.log(refreshToken);
+      try { 
+         const user = await userModel.findOne({ email: profile._json.email}); //como el email es un atributo único es la única forma de garantizarme si ya existe o no
+         if (user) {
+            done(null, false);
+         } else {
+            const userCreated = await userModel.create({
+               first_name: profile._json.name,
+               last_name:" ",
+               email: profile._json.email,
+               age: 18,  //edad por defecto
+               password: 'password' //como no la tengo, le paso una pass generica para que despues la cambie
+            })
+            done(null, userCreated)
+         };    
+      } catch (error) {
+         done(error)
+      };
+   })); 
    //Inicializamos la session del user
    passport.serializeUser((user, done) => {
       done(null, user._id);
@@ -37,21 +85,6 @@ import { userModel } from "../models/users.model.js";
       const user = await userModel.findById(id);
       done (null, user);
    });   
-   //manejo el login
-   passport.use('login', new LocalStrategy({ usernameField: 'email'}, async (username, password, done) => {
-      try {
-         const user = await userModel.findOne({ email: email });
-         if (!user) {
-            return done (null, false);
-         }
-         if (validatePassword(password, user.password)) { // compara la contraseña ingresada con la BDD
-            return done (null, user) 
-         }
-         return done (null, false) // contraseña no valida con la de BDD  
-      } catch (error) {
-         return done (error)
-      };
-   }));
 };
 
 export default initializePassport;
