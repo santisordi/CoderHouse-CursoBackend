@@ -61,7 +61,7 @@ import { userModel } from "../models/users.model.js";
       try { 
          const user = await userModel.findOne({ email: profile._json.email}); //como el email es un atributo único es la única forma de garantizarme si ya existe o no
          if (user) {
-            done(null, false);
+            done(null, user);
          } else {
             const userCreated = await userModel.create({
                first_name: profile._json.name,

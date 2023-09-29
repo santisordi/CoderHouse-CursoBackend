@@ -26,7 +26,8 @@ sessionRouter.get('/github', passport.authenticate('github', {scope: ['user:emai
 
 sessionRouter.get('/githubSession', passport.authenticate('github', {scope: ['user:email']}), async (req, res)=>{
   req.session.user = req.user
-  res.status(200).send({mensaje: "Session created"});
+  res.redirect('/static/home'); //Redirigimos al usuario a home una vez inicia sesion correctamente
+  // res.status(200).send({mensaje: "Session created"});
 });
 
 sessionRouter.get('/logout', (req, res) => {
