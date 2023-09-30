@@ -31,10 +31,18 @@ sessionRouter.get('/githubSession', passport.authenticate('github', {scope: ['us
 });
 
 sessionRouter.get('/logout', (req, res) => {
-    if (req.session.login) {
-        req.session.destroy();
-    }
-    res.status(200).send({ resultado: 'Login eliminado' });
+  if (req.session.user) {
+      try {
+          req.session.destroy()
+          res.status(200).send({ resultado: 'Has cerrado sesion' })
+          res.redirect("/static/signin");
+      }
+      catch (error) {
+          res.status(400).send({ error: `Error al cerrar sesion: ${error}` });
+      }
+  } else {
+      res.status(400).send({ error: `No hay sesion iniciada` });
+  };
 });
 
 export default sessionRouter;
