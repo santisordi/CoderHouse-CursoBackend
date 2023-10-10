@@ -102,7 +102,7 @@ import { userModel } from "../models/users.model.js";
    })); 
    //Inicializamos la session del user
    passport.serializeUser((user, done) => {
-      done(null, user._id);
+      done(null, user.user._id);
    });
    //logout session
    passport.deserializeUser(async (id, done)=>{

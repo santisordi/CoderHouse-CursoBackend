@@ -20,8 +20,15 @@ sessionRouter.post('/login', passport.authenticate('login'), (req, res) => {
   };
 });
 
-sessionRouter.get('/testJWT', passport.authenticate('jwt', {session:false}), async (req,res)=>{
-  res.status(200).send({mesaje: req.user});
+sessionRouter.get('/testJWT', passport.authenticate('jwt', { session: true }), async (req,res)=>{
+    res.status(200).send({mesaje: req.user});
+    console.log(req.user.user)
+    req.session.user = {
+      first_name : req.user.user.first_name,
+      last_name : req.user.user.last_name,
+      age: req.user.user.age,
+      email: req.user.user.email
+  };
 });
 
 sessionRouter.get('/github', passport.authenticate('github', {scope: ['user:email']}), async (req, res)=>{

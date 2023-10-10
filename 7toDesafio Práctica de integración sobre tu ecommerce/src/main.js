@@ -43,8 +43,8 @@ app.use(session({ //Config session en app en mongo
         ttl: 200 //time to live en seg
     }),
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
+    resave: true,//estaban en false
+    saveUninitialized: true
 }));
 app.engine('handlebars', engine()); //defino que trabajo con habndlebars y guardo config de engine
 app.set('view engine', 'handlebars');
