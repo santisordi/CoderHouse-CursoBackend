@@ -21,7 +21,7 @@ sessionRouter.post('/login', passport.authenticate('login'), (req, res) => {
 });
 
 sessionRouter.get('/testJWT', passport.authenticate('jwt', { session: true }), async (req,res)=>{
-    res.status(200).send({mesaje: req.user});
+    res.status(200).send({ mesaje: req.user });
     console.log(req.user.user)
     req.session.user = {
       first_name : req.user.user.first_name,

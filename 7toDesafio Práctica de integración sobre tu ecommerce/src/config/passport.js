@@ -19,6 +19,7 @@ import { userModel } from "../models/users.model.js";
       //si existen cookies, consulte por mi cookie y sino asigno {}
       const token = req.cookies ? req.cookies.jwtCookie : {};
       console.log(token);
+      return token
    };
    //done es como si fuese un res.status(),el callback de respuesta. 
     //Acá defino qué y en qué ruta voy a utilizar mi estrategia
