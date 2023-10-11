@@ -11,7 +11,7 @@
     return token;
 };
 
-console.log(generateToken({"_id":{"$oid":"6525d589d056a0d151a1ded4"},"first_name":"Santiago","last_name":"Programer","age":{"$numberInt":"38"},"email":"santi@programer.com","password":"$2b$15$n6gLiYs.HR0mT4haESY/3OPgqV.P0U/9K/.uXMoZhbT/Ds15bEG9q","rol":"user","__v":{"$numberInt":"0"}}))
+console.log(generateToken({"_id":"6526ef4d730bcee0eb0b94f5","first_name":"Santiago","last_name":"Programer","age":{"$numberInt":"38"},"email":"santi@programer.com","password":"$2b$15$n6gLiYs.HR0mT4haESY/3OPgqV.P0U/9K/.uXMoZhbT/Ds15bEG9q","rol":"Admin","__v":{"$numberInt":"0"}}))
 
 //Compruebo autenticación
 export const authToken = (req, res, next) => {

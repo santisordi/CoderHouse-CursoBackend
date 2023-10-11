@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import { passportError, authorization } from "../utils/messageErrors.js";
 
 const sessionRouter = Router();
  //Ruta para crear el login del usuario con passport
@@ -19,6 +20,10 @@ sessionRouter.post('/login', passport.authenticate('login'), (req, res) => {
     res.status(500).send({mensaje: `Error al inicializar sesion ${error}`});
   };
 });
+
+sessionRouter.get('/current', passportError('jwt'), authorization('Admin'), (req, res)=> {
+    res.send(req.user);
+})
 
 sessionRouter.get('/testJWT', passport.authenticate('jwt', { session: true }), async (req,res)=>{
     res.status(200).send({ mesaje: req.user });
