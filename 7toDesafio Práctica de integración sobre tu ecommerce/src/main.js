@@ -9,17 +9,10 @@ import MongoStore from 'connect-mongo';
 import mongoConnect from './dataBase.js';
 import passport from 'passport';
 import initializePassport from './config/passport.js';
-
+import staticsRouter from './router/statics.routes.js';
+import router from './router/main.routes.js';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
-
-import userRouter from './router/user.routes.js';
-import productRouter from './router/product.routes.js';
-import cartRouter from './router/carts.routes.js'; 
-import messageRouter from './router/messages.routes.js';
-import staticsRouter from './router/statics.routes.js';
-import sessionRouter from './router/sessions.routes.js';
-import profileRouter from './router/profile.routes.js';
 
 const app = express();
 const PORT = 4000;
@@ -46,6 +39,7 @@ app.use(session({ //Config session en app en mongo
     resave: true,//estaban en false
     saveUninitialized: true
 }));
+
 app.engine('handlebars', engine()); //defino que trabajo con habndlebars y guardo config de engine
 app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, './views')); //esta es otra forma de trabajar con rutas
@@ -55,10 +49,14 @@ app.use(session({
     resave: false, //Permite que la sesion permanezca activa en caso de estar inactivo. Con false muere la sesión
     saveUninitialized: false //Permite guardar cualquier sesion aun cuando el objeto de sesion no tengo nada por contener   
 }));
+
 initializePassport(); // se aplica esta estrategia de login 
 app.use(passport.initialize()); //se inicializa passport
 app.use(passport.session()); //se inicializa para trabajar con las sesiones de mis usuarios
 
+//Routes
+app.use('/static', express.static (path.join(__dirname, '/public')), staticsRouter);
+app.use('/', router)
 const mensajes = [];
 //Conexion Socket.io
 io.on("connection", (socket)=>{
@@ -85,14 +83,8 @@ io.on("connection", (socket)=>{
         socket.emit('mensajeProductoCreado', 'Prodcuto creado correctamente')
     });
 });
-//Routes
-app.use('/static', express.static (path.join(__dirname, '/public')), staticsRouter);
-app.use('/api/products', productRouter); //aca se enlaza la ruta al use
-app.use('/api/carts', cartRouter);
-app.use('/api/users', userRouter);
-app.use('/api/message', messageRouter );
-app.use('/api/sessions', sessionRouter );
-app.use('/api/profile', profileRouter);
+
+
 app.get('/*',(req,res)=>{   //Ruta con error 404 que se utiliza a nivel general
     res.send("Error 404: Page not found");
 })

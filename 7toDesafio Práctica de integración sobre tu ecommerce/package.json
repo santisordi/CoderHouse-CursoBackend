@@ -20,7 +20,7 @@
     "express-session": "^1.17.3",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.5.3",
+    "mongoose": "^7.6.1",
     "mongoose-paginate-v2": "^1.7.31",
     "npm": "^10.1.0",
     "passport": "^0.6.0",
