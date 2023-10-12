@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
-
+import { paginate } from "mongoose-paginate-v2";
+ 
 const orderSchema = new Schema ({
     name: String,
     size: {
@@ -13,5 +14,7 @@ const orderSchema = new Schema ({
         default: Date.now
     }
 });
+
+orderSchema.plugin(paginate)
 
 export const orderModel = ('order', orderSchema);

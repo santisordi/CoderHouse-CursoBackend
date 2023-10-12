@@ -57,7 +57,10 @@ productRouter.post("/", async (req, res)=>{
         });
             res.status(200).send({resultado: 'ok', message: respuesta });           
     }catch (error){
-         res.status(400).send({error: `Error al crear el producto: ${error}`});
+        if (error.code == 11000) {
+            res.status(400).send({error: `Error, llave duplicada`});  
+        };
+        //  res.status(400).send({error: `Error al crear el producto: ${error}`});
     };
 }); 
 //Ruta para crear un producto o actualizar en caso de que exista
