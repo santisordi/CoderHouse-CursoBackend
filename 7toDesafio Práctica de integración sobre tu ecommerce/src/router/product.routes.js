@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import productsModel from '../models/products.model.js';
+import { passportError, authorization } from "../utils/messageErrors.js";
+
 
 const productRouter = Router();
 //Ruta inicial de Products
@@ -48,7 +50,7 @@ productRouter.get("/:pid", async (req, res)=>{
 }); 
 
 //Ruta para crear un producto
-productRouter.post("/", async (req, res)=>{
+productRouter.post("/", passportError('jwt'), authorization('Admin'), async (req, res)=>{
     const { title, description, stock, code, price, category } = req.body;
     
     try {

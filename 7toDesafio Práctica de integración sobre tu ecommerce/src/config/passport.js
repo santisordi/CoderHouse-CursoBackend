@@ -39,7 +39,7 @@ import { userModel } from "../models/users.model.js";
          {passReqToCallback: true, usernameField:'email'}, async (req, username, password, done) => {
             //defino como registrar un usuario
             const {first_name, last_name, email, age} = req.body;
-            try {
+            try { 
                const user = await userModel.findOne({ email: email});
                if (user) {
                   return done(null, false); //atributo se le pasa el error, y despues true, false o el usuario 
@@ -103,7 +103,7 @@ import { userModel } from "../models/users.model.js";
    })); 
    //Inicializamos la session del user
    passport.serializeUser((user, done) => {
-      done(null, user.user._id);
+      done(null, user._id);
    });
    //logout session
    passport.deserializeUser(async (id, done)=>{

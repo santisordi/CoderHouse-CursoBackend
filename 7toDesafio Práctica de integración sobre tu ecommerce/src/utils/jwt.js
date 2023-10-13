@@ -10,8 +10,11 @@
     const token = jwt.sign({user}, "coderhouse123", {expiresIn:'12h' });
     return token;
 };
+//generador de token admin manual
+//console.log(generateToken({"_id":"6526ef4d730bcee0eb0b94f5","first_name":"Santiago","last_name":"Programer","age":{"$numberInt":"38"},"email":"santi@programer.com","password":"$2b$15$n6gLiYs.HR0mT4haESY/3OPgqV.P0U/9K/.uXMoZhbT/Ds15bEG9q","rol":"Admin","__v":{"$numberInt":"0"}}))
 
-console.log(generateToken({"_id":"6526ef4d730bcee0eb0b94f5","first_name":"Santiago","last_name":"Programer","age":{"$numberInt":"38"},"email":"santi@programer.com","password":"$2b$15$n6gLiYs.HR0mT4haESY/3OPgqV.P0U/9K/.uXMoZhbT/Ds15bEG9q","rol":"Admin","__v":{"$numberInt":"0"}}))
+//generador de token user
+// console.log(generateToken({"_id":"652975630b137928ee8ce2cd","first_name":"user4","last_name":"asda","age":{"$numberInt":"30"},"email":"koas@asd.com","password":"13456","rol":"user"}));
 
 //Compruebo autenticación
 export const authToken = (req, res, next) => {
