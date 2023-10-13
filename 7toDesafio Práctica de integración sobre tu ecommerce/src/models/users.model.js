@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import cartModel from "./carts.models.js";
 
 const userSchema = new Schema({
     first_name: {
@@ -35,6 +36,19 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId, 
             ref: 'carts'
     }
+});
+
+userSchema.pre('save', async function (next) {
+    if(!this.cart) {
+        try {
+            const newCart = await cartModel.create({});//esto devuelve el id
+            this.cart = newCart._id;
+        } catch (error) {
+            next(error);
+        };
+    } else {
+
+    };
 });
 
 export const userModel = model('users', userSchema);

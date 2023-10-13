@@ -21,7 +21,7 @@ const cartSchema = new Schema({
 				},
 			}		
 		});
-		//esto es el populate para que traiga el objeto completo
+		//esto es el populate para que traiga el objeto completo. Usamos el concepto de pre, previo a generar el modelo agregro la configuracion
 		cartSchema.pre('find', function () { //utilizo findOne porque es un solo carrito
 				this.populate('products.id_prod')		
 		});
