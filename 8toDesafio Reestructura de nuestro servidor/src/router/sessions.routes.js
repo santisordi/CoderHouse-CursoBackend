@@ -10,7 +10,7 @@ sessionRouter.post('/login',
                   sessionController.postSessions);
 
 sessionRouter.post('/register',passport.authenticate('register'), sessionController.registerPost);
-
+ 
 sessionRouter.get('/current', 
                   passportError('jwt'), 
                   authorization('user'), 
