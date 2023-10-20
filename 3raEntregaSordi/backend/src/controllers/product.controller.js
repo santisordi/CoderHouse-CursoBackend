@@ -11,7 +11,7 @@ export const getProducts = async(req, res) => {
     
     try {
 
-        const products = await productsModel.paginate({category: filter}, {limit: lim, page: pag, sort : {price:ord}});
+        const products = await productsModel.paginate({ category : filter }, {limit: lim, page: pag, sort : {price:ord}});
         
         if (products) {
            return res.staus(200).send(products);
