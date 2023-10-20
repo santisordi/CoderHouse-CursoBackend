@@ -20,6 +20,9 @@ export const userPost = async (req,res) => {
     };
 }
 
-const usersController = { getUser, postUser };
+const usersController = { 
+    userGet, 
+    userPost, 
+};
 
 export default usersController;
