@@ -1,5 +1,5 @@
 import { generateToken } from "../utils/jwt.js";
-
+//login controller
 const postSessions = async (req, res) => {
     try {
         if (!req.user) {
@@ -19,11 +19,24 @@ const postSessions = async (req, res) => {
           maxAge: 43200000 // seteo por 12 hs la sesion en milisegundos
         });
     
-        res.status(200).send ({payload: req.user });
+        res.status(200).send ({payload: req.user }); //aca el profe envio directamente la cookie varibale token 
       } catch (error) {
         res.status(500).send({mensaje: `Error al inicializar sesion ${error}`});
       };
 };
+
+//controllador de registro
+const registerPost = async (req,res) => {
+  try {
+      if (!req.user) {
+          return res.status(400).send({mensaje:`Usuario ya existente`});
+      }
+      return res.status(200).send({mensaje: "Usuario Creado"});
+  } catch (error) {
+      res.status(500).send({mensaje: `Error al crear usuario ${error}`});
+  };
+}
+
 
 const getCurrentSessions = async (req, res) => {
   res.status(200).send(req.user);   
@@ -60,7 +73,8 @@ const sessionController = {
     getCurrentSessions,
     getGithubCreateUser,
     getGithubSessions,
-    getLogout
+    getLogout,
+    registerPost,
 };
 
 export default sessionController;

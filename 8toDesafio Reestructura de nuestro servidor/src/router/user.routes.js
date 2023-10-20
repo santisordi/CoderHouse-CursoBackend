@@ -1,12 +1,10 @@
 import { Router } from "express";
-import passport from "passport";
 import usersController from "../controllers/users.controller.js";
 
 const userRouter = Router();
 //Ruta para obtener usuarios
 userRouter.get('/', usersController.userGet);
 //Ruta para crear usuarios con passport
-userRouter.post('/',passport.authenticate('register'), usersController.userPost);
   
 export default userRouter;
 

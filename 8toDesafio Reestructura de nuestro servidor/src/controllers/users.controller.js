@@ -9,20 +9,9 @@ export const userGet = async (req, res) => {
     };
 };
 
-export const userPost = async (req,res) => {
-    try {
-        if (!req.user) {
-            return res.status(400).send({mensaje:`Usuario ya existente`});
-        }
-        return res.status(200).send({mensaje: "Usuario Creado"});
-    } catch (error) {
-        res.status(500).send({mensaje: `Error al crear usuario ${error}`});
-    };
-}
 
 const usersController = { 
     userGet, 
-    userPost, 
 };
 
 export default usersController;

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import productsController from '../controllers/product.controller.js';
+import { passportError, authorization } from '../utils/messageErrors.js';
 
 const productRouter = Router();
 //Ruta inicial de Products
