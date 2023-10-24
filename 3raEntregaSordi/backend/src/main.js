@@ -11,8 +11,21 @@ import passport from 'passport';
 import initializePassport from './config/passport.js';
 import staticsRouter from './router/statics.routes.js';
 import router from './router/main.routes.js';
+import cors from 'cors';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
+
+const whiteList = ['http://192.168.100.41:3000'];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (whiteList.indexOf(origin) != -1 || !origin) {// si existe dentro de la withe list
+            
+        } else {
+            callback(new Error('Acceso dengado'));
+        };
+    }   
+};
 
 const app = express();
 const PORT = 4000;
@@ -27,6 +40,7 @@ const server = app.listen(PORT, ()=>{
 const io = new Server(server);
 
 //middlewares
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));//se firma la cookie para q no puedan modificarla
 app.use(express.urlencoded({extended: true}));
@@ -56,7 +70,7 @@ app.use(passport.session()); //se inicializa para trabajar con las sesiones de m
 
 //Routes
 app.use('/static', express.static (path.join(__dirname, '/public')), staticsRouter);
-app.use('/', router)
+app.use('/', router);
 const mensajes = [];
 //Conexion Socket.io
 io.on("connection", (socket)=>{
@@ -66,7 +80,7 @@ io.on("connection", (socket)=>{
         console.log(info);
         mensajes.push(info);
         io.emit('mensajes', mensajes); // emito el array de mensajes
-    })   
+    });   
     // socket.on('load', async () => {
     //     const products = await productManager.getProducts();
     //     socket.emit('products', products);
@@ -84,7 +98,6 @@ io.on("connection", (socket)=>{
     });
 });
 
-
 app.get('/*',(req,res)=>{   //Ruta con error 404 que se utiliza a nivel general
     res.send("Error 404: Page not found");
-})
+});

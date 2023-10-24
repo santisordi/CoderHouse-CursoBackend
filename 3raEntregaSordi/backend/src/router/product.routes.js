@@ -4,7 +4,7 @@ import { passportError, authorization } from '../utils/messageErrors.js';
 
 const productRouter = Router();
 //Ruta inicial de Products
-productRouter.get('/', productsController.getProduct);
+productRouter.get('/', productsController.getProducts);
 //Ruta para traer un producto según su ID
 productRouter.get('/:pid', productsController.getProduct);
 //Ruta para crear un producto
