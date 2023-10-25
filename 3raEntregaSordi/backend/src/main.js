@@ -2,7 +2,7 @@ import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import { engine } from 'express-handlebars';
-import { Server } from 'socket.io';
+import { configureSocket } from './socket.js';
 import { __dirname } from './path.js';
 import path from 'path';
 import MongoStore from 'connect-mongo';
@@ -12,6 +12,7 @@ import initializePassport from './config/passport.js';
 import staticsRouter from './router/statics.routes.js';
 import router from './router/main.routes.js';
 import cors from 'cors';
+import nodemailer from 'nodemailer';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
 
@@ -20,7 +21,7 @@ const whiteList = ['http://192.168.100.41:3000'];
 const corsOptions = {
     origin: function (origin, callback) {
         if (whiteList.indexOf(origin) != -1 || !origin) {// si existe dentro de la withe list
-            
+            callback(null, true)
         } else {
             callback(new Error('Acceso dengado'));
         };
@@ -37,7 +38,41 @@ const server = app.listen(PORT, ()=>{
     console.log(`http://localhost:${PORT}`);
 });
 
-const io = new Server(server);
+//Conexion a Socket
+configureSocket(server)
+
+//Conexion Node Mailer
+let transporter= nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: 'santiagosordi2@gmail.com',
+        pass: process.env.PASWORD_EMAIL,
+        authMethod:'LOGIN'
+    }
+});
+//Ruta de nodemailer
+app.get('/mail', async (req, res)=>{
+    const resultado = await transporter.sendMail({
+        from: 'TEST Santi santiagosordi2@gmail.com',
+        to: 'franciscopugh3@gmail.com',
+        subject: 'Hola profe! Soy Goku!',
+        html:
+            `
+            <div>
+                <h1> Si te gusta programar tenes que dominarlo </h1>
+            </div>
+        `,
+        attachments: [{
+            filename: 'original.jpg',
+            path: __dirname + '/image/goku.jpg',
+            cid: 'goku.jpg'
+        }]
+    });
+    console.log(resultado);
+    res.send('Mail enviado');
+});
 
 //middlewares
 app.use(cors(corsOptions));
@@ -71,32 +106,7 @@ app.use(passport.session()); //se inicializa para trabajar con las sesiones de m
 //Routes
 app.use('/static', express.static (path.join(__dirname, '/public')), staticsRouter);
 app.use('/', router);
-const mensajes = [];
-//Conexion Socket.io
-io.on("connection", (socket)=>{
-    console.log("Conexion con Socket io");
-    
-    socket.on ('mensaje', info =>{
-        console.log(info);
-        mensajes.push(info);
-        io.emit('mensajes', mensajes); // emito el array de mensajes
-    });   
-    // socket.on('load', async () => {
-    //     const products = await productManager.getProducts();
-    //     socket.emit('products', products);
-    // });
-    
-    // socket.on('newProduct', async product => {
-    //     await productManager.addProducts(product);
-    //     const products = await productManager.getProducts();
-    //     socket.emit('products', products);
-    // });    
 
-    socket.on('newProduct',  (product) => {
-        console.log(product)
-        socket.emit('mensajeProductoCreado', 'Prodcuto creado correctamente')
-    });
-});
 
 app.get('/*',(req,res)=>{   //Ruta con error 404 que se utiliza a nivel general
     res.send("Error 404: Page not found");
