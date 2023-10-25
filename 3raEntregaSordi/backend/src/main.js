@@ -41,39 +41,6 @@ const server = app.listen(PORT, ()=>{
 //Conexion a Socket
 configureSocket(server)
 
-//Conexion Node Mailer
-let transporter= nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        user: 'santiagosordi2@gmail.com',
-        pass: process.env.PASWORD_EMAIL,
-        authMethod:'LOGIN'
-    }
-});
-//Ruta de nodemailer
-app.get('/mail', async (req, res)=>{
-    const resultado = await transporter.sendMail({
-        from: 'TEST Santi santiagosordi2@gmail.com',
-        to: 'franciscopugh3@gmail.com',
-        subject: 'Hola profe! Soy Goku!',
-        html:
-            `
-            <div>
-                <h1> Si te gusta programar tenes que dominarlo </h1>
-            </div>
-        `,
-        attachments: [{
-            filename: 'original.jpg',
-            path: __dirname + '/image/goku.jpg',
-            cid: 'goku.jpg'
-        }]
-    });
-    console.log(resultado);
-    res.send('Mail enviado');
-});
-
 //middlewares
 app.use(cors(corsOptions));
 app.use(express.json());
