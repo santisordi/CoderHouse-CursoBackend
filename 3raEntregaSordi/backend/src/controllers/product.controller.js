@@ -11,10 +11,11 @@ export const getProducts = async(req, res) => {
     
     try {
 
-        const products = await productsModel.paginate({ category : filter }, {limit: lim, page: pag, sort : {price:ord}});
+        // const products = await productsModel.find({}).exec(); aca me trae todos los products
+        const products = await productsModel.paginate({ category : filter }, {limit: lim, page: pag, sort : { price:ord }}); //aca no puedo hacer la query
         
         if (products) {
-           return res.staus(200).send(products);
+           return res.status(200).send(products);
         }   
 
         res.status(404).send({ error: "Productos no encontrados"})

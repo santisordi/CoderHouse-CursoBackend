@@ -12,7 +12,6 @@ import initializePassport from './config/passport.js';
 import staticsRouter from './router/statics.routes.js';
 import router from './router/main.routes.js';
 import cors from 'cors';
-import nodemailer from 'nodemailer';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
 
