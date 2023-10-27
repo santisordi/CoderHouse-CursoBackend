@@ -10,9 +10,12 @@ export const getProducts = async(req, res) => {
     const ord = sort == 'asc' ? 1 : -1;//Utilizamos la query.sort que viaja desde el lado del cliente para que según lo que ingrese ordene de forma Ascendente o Descendente
     
     try {
-
+        const query = {};
+            if (filter) {
+            query.category = filter;
+            }
         // const products = await productsModel.find({}).exec(); aca me trae todos los products
-        const products = await productsModel.paginate({ category : filter }, {limit: lim, page: pag, sort : { price:ord }}); //aca no puedo hacer la query
+        const products = await productsModel.paginate(query, {limit: lim, page: pag, sort : { price:ord }}); //{} como primer parametro para que traiga todos los productos
         
         if (products) {
            return res.status(200).send(products);
