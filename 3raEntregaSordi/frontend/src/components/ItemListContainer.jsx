@@ -1,11 +1,45 @@
 import { useEffect, useState } from "react";
-import ItemList from "./ItemList";
-import { useParams } from "react-router-dom";
-import { getFirestore, collection, getDocs, where, query } from "firebase/firestore"
-import Loading from "./Loading";
-//import productos from "./json/productos.json"
 
 const ItemListContainer = () => {
+    const [products, setProducts] = useState([]);
+    const fethProducts = async () => {
+        const response = await fetch('http://localhost:4000/api/products', {
+            method:'GET',    
+            headers: {
+                    'Content-type': 'application/json',
+                }
+        });
+        if (response.status === 200) {
+            const data = await response.json();
+            setProducts(data.docs);
+        };       
+    }; 
+
+    useEffect(async() => {
+        fethProducts()
+    }, []);
+    
+    return (
+        <div>
+            <h1>Productos</h1>
+        </div>
+
+    );
+};
+
+export default ItemListContainer;
+
+
+
+
+
+// import ItemList from "./ItemList";
+// import { useParams } from "react-router-dom";
+// import { getFirestore, collection, getDocs, where, query } from "firebase/firestore"
+// import Loading from "./Loading";
+//import productos from "./json/productos.json"
+
+
 //     const [items, setItems] = useState([]);
 //     const [loading, setLoading] = useState(true);
 //     const {id} = useParams(); 
@@ -43,7 +77,3 @@ const ItemListContainer = () => {
 //                 </div>
 //             </div>
 //     );
-};
-
-export default ItemListContainer;
-    
