@@ -19,7 +19,7 @@ const postSessions = async (req, res) => {
           maxAge: 43200000 // seteo por 12 hs la sesion en milisegundos
         });
     
-        res.status(200).send ({payload: req.user }); //aca el profe envio directamente la cookie varibale token 
+        res.status(200).send ({token}); //aca el profe envio directamente la cookie varibale token antes estaba payload: req.user 
       } catch (error) {
         res.status(500).send({mensaje: `Error al inicializar sesion ${error}`});
       };

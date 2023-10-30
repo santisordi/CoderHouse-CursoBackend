@@ -15,7 +15,7 @@ import cors from 'cors';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
 
-const whiteList = ['http://192.168.100.41:3000'];
+const whiteList = ['http://localhost:3000'];
 
 const corsOptions = {
     origin: function (origin, callback) {

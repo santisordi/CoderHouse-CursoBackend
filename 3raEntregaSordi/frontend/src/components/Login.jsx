@@ -1,7 +1,9 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
     const formRef = useRef(null); // Captura la referencia del formulario
+    const navigate = useNavigate()
 
     const handleSbmit =  async (e) => { //esto es para reemplasar el usestate y hacerlo mas rapido y simple
         e.preventDefault(); 
@@ -14,11 +16,16 @@ export const Login = () => {
                     'Content-type': 'application/json',
                 },
                 body: JSON.stringify(data)
-            }); 
-            console.log(response)
-            if (response.status == 200) {
-                console.log(document.cookie)
-            }
+            });
+
+            if (response.status === 200){
+                const datos = await response.json();
+                document.cookie = `jwtToken= ${datos.token}; expires=${new Date(Date.now() +1*24*60*60*1000).toUTCString()}; path=/`;
+                console.log(datos);  
+                navigate('/');  
+            } else {
+                console.log('login invalido')
+            };
     };
 
     return (
