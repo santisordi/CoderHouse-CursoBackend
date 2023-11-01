@@ -73,7 +73,7 @@ const updateProductToCart = async (req, res) => {
 			const productExists = cart.products.find(cartProd => cartProd.id_prod.toString() == prod.id_prod);
 			productExists ?	productExists.quantity += prod.quantity
                           : cart.products.push(prod);			
-		});
+		}); 
 		await cart.save();
 		cart
 			? res.status(200).send({ resultado: 'OK', message: cart })
@@ -81,6 +81,40 @@ const updateProductToCart = async (req, res) => {
 	} catch (error) {
 		res.status(400).send({ error: `Error al agregar productos: ${error}` });
 	};
+};
+//finalizar compra
+const purchaseCart = async (req, res) => {
+	const { cid } = req.params;
+	try {
+		const cart = await cartModel.findById(cid);
+		const products = await productModel.find();
+
+		if (cart) {
+			const user = await userModel.find({ cart: cart._id });
+			const email = user[0].email;
+			let amount = 0;
+			const purchaseItems = [];
+			cart.products.forEach(async item => {
+				const product = products.find(prod => prod._id == item.id_prod.toString());
+				if (product.stock >= item.quantity) {
+					amount += product.price * item.quantity;
+					product.stock -= item.quantity;
+					await product.save();
+					purchaseItems.push(product.title);
+				}
+				//ticket?info=${amount}
+			});
+			console.log(purchaseItems);
+			await cartModel.findByIdAndUpdate(cid, { products: [] });
+			res.redirect(
+				`http://localhost:8080/api/tickets/create?amount=${amount}&email=${email}`
+			);
+		} else {
+			res.status(404).send({ resultado: 'Not Found', message: cart });
+		}
+	} catch (error) {
+		res.status(400).send({ error: `Error al consultar carrito: ${error}` });
+	}
 };
 // delete pid from cart
 const deleteProductCart = async (req, res) => {
@@ -133,6 +167,7 @@ const cartsController = {
 	updateProductToCart,
 	deleteProductCart,
 	deleteProductsCart,
+    purchaseCart,
 };
 
 export default cartsController;

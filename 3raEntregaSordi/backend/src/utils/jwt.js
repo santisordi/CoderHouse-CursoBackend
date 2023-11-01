@@ -7,7 +7,7 @@
         2do: clave privada para el cifrado
         3ro tiempo de expiracion
     */
-    const token = jwt.sign({user}, "coderhouse123", {expiresIn:'12h' });
+    const token = jwt.sign({user}, process.env.JWT_SECRET, {expiresIn:'12h' });
     return token;
 };
 //generador de token admin manual

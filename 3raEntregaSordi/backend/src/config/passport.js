@@ -4,21 +4,21 @@ import GithubStrategy from 'passport-github2';
 import jwt from 'passport-jwt'
 import { createHash, validatePassword } from "../utils/bcrypt.js";
 import { userModel } from "../models/users.model.js";
+import 'dotenv/config';
 
  //Defino estrategia (los mensajes de error se manejan en la ruta, aca se ven los msj html )
  const LocalStrategy = local.Strategy;
  const JWTStrategy = jwt.Strategy;
  const ExtracJWT = jwt.ExtractJwt; //Extractor de los headers de la consulta 
+ 
  //Función de mi estrategia
  const initializePassport = () => {
-
    //con esta funcion extraigo el bearer token
    const cookiesExtractor = req => {
-      console.log(req.cookies);
       //{} no hay cookies != no exista mi cookie
       //si existen cookies, consulte por mi cookie y sino asigno {}
-      const token = req.cookies ? req.cookies.jwtCookie : {};
-      console.log(token);
+      const token = req.headers.authorization ? req.headers.authorization : {};
+      console.log("Token", token);
       return token
    };
    //done es como si fuese un res.status(),el callback de respuesta. 

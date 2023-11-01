@@ -12,6 +12,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CartContextProvider from './components/context/CartContext';
 import Checkout from './components/Checkout';
 import FinalPag from './components/FinalPag';
+import { NewProduct } from './components/newProduct';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route path={"/FinalPag/:orderId"} element={<FinalPag />} />
             <Route path={"/login"} element={<Login />} />
             <Route path={"/register"} element={<Register />} />
+            <Route path={"/newProduct"} element={<NewProduct />} />
             <Route path={"/*"} element={<Error404 />} />
           </Routes>
           <Footer />

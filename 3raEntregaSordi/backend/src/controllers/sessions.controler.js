@@ -18,7 +18,6 @@ const postSessions = async (req, res) => {
         res.cookie('jwtCookie', token, {
           maxAge: 43200000 // seteo por 12 hs la sesion en milisegundos
         });
-    
         res.status(200).send ({token}); //aca el profe envio directamente la cookie varibale token antes estaba payload: req.user 
       } catch (error) {
         res.status(500).send({mensaje: `Error al inicializar sesion ${error}`});

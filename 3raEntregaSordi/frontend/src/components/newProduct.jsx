@@ -26,7 +26,7 @@ export const  NewProduct = () =>{
           method:'POST',    
           headers: {
                   'Content-type': 'application/json',
-                  'Autorization': token
+                  'Autorization': `${token}`
               },
               body: JSON.stringify(data)
           });

@@ -9,6 +9,8 @@ export const passportError = (strategy) => {
                 return next(error);
             }
 
+            console.log(user)
+
             if(!user){
                 return res.status(401).send({error: info.messages ? info.messages : info.toString()})//Si envian el objeto lo muestro, si me mandaron otra cosa lo muestro pasado a string
             }
