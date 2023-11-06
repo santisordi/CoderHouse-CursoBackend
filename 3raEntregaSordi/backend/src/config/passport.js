@@ -17,9 +17,10 @@ import 'dotenv/config';
    const cookiesExtractor = req => {
       //{} no hay cookies != no exista mi cookie
       //si existen cookies, consulte por mi cookie y sino asigno {}
-      const token = req.headers.authorization ? req.headers.authorization : {};
-      console.log("Token", token);
-      return token
+      const headerToken = req.headers ? req.headers.authorization : null;
+      const cookiesToken = req.cookies ? req.cookies.jwtCookie : null;
+      console.log("token cookie", cookiesToken);
+      return headerToken || cookiesToken || {};
    };
    //done es como si fuese un res.status(),el callback de respuesta. 
     //Acá defino qué y en qué ruta voy a utilizar mi estrategia
