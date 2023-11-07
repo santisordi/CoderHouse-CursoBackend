@@ -21,17 +21,15 @@ export const  NewProduct = () =>{
           }
       }
       console.log(data)
-      
+      console.log(token)
       const response = await fetch('http://localhost:4000/api/products', {
           method:'POST',    
           headers: {
                   'Content-type': 'application/json',
-                  'Autorization': `${token}`
+                  'Authorization': `Bearer ${token}`
               },
               body: JSON.stringify(data)
           });
-
-
 
           if (response.status === 200 || response.status === 201){
               const datos = await response.json();

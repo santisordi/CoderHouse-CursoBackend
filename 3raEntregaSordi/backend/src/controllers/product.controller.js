@@ -51,12 +51,11 @@ export const postProduct = async(req, res) => {
 
     const { title, description, code, price, stock, category } = req.body;
 
-
     try {
         const product = await productsModel.create({ title, description, code, price, stock, category });
 
         if (product) {
-           return res.staus(201).send(product);
+           return res.status(201).send(product);
         }   
 
         res.status(404).send({ error: "Productos no encontrados"})

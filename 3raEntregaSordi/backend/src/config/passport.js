@@ -1,7 +1,7 @@
 import local from "passport-local"; //estrategia elegida
 import passport from "passport"; //handler de estrategia
 import GithubStrategy from 'passport-github2';
-import jwt from 'passport-jwt'
+import jwt from 'passport-jwt';
 import { createHash, validatePassword } from "../utils/bcrypt.js";
 import { userModel } from "../models/users.model.js";
 import 'dotenv/config';
@@ -14,12 +14,27 @@ import 'dotenv/config';
  //Función de mi estrategia
  const initializePassport = () => {
    //con esta funcion extraigo el bearer token
-   const cookiesExtractor = req => {
+   // const cookiesExtractor = (req) => {
+   //    let token = null; // Inicializamos token como null
+    
+   //    if (req && req.headers && req.headers.authorization) {
+   //      token = req.headers.authorization; // Si existe req.headers.authorization, asignamos el valor a token
+   //    } else if (req && req.cookies && req.cookies.jwtCookie) {
+   //      token = req.cookies.jwtCookie; // Si no existe req.headers.authorization  pero existe req.cookies.jwtCookie, asignamos su valor a token
+   //    }
+    
+   //    console.log("Token cookie:", token);
+   //    return token; // Devolvemos el valor de token, que será el token JWT si existe o null si no existe
+   //  };
+    
+   //opcion dada en clase
+   const cookiesExtractor = req=> {
       //{} no hay cookies != no exista mi cookie
       //si existen cookies, consulte por mi cookie y sino asigno {}
       const headerToken = req.headers ? req.headers.authorization : null;
       const cookiesToken = req.cookies ? req.cookies.jwtCookie : null;
       console.log("token cookie", cookiesToken);
+      console.log(headerToken)
       return headerToken || cookiesToken || {};
    };
    //done es como si fuese un res.status(),el callback de respuesta. 

@@ -31,8 +31,6 @@ export default sessionRouter;
 
 
 
-
-
 // sessionRouter.get('/testJWT', passport.authenticate('jwt', { session: true }), async (req,res)=>{
 //     res.status(200).send({ mesaje: req.user });
 //     console.log(req.user.user)

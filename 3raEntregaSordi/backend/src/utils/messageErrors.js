@@ -9,8 +9,6 @@ export const passportError = (strategy) => {
                 return next(error);
             }
 
-            console.log(user)
-
             if(!user){
                 return res.status(401).send({error: info.messages ? info.messages : info.toString()})//Si envian el objeto lo muestro, si me mandaron otra cosa lo muestro pasado a string
             }
@@ -28,10 +26,12 @@ export const authorization = (rol) => {
         if(!req.user) {
             return res.status(401).send ({error:'Usuario no autorizado'});
         };
-        if(req.user.user.rol != rol){//se verifica el rol del usuario es disitnto al ingresado por parametro
+        
+        if(req.user.user.rol.toLowerCase() != rol.toLowerCase()){//se verifica el rol del usuario es disitnto al ingresado por parametro
             return res.status(403).send ({error: 'Usuario sin los privilegios necesarios'});
         };
-
+        console.log(req.user)
+        
         next();
 
     };
