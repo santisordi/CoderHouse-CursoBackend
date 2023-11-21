@@ -9,26 +9,24 @@ import { generateUserErrorInfo } from "../services/errors/info.js";
 const sessionRouter = Router();
  //Ruta para crear el login del usuario con passport
 sessionRouter.post('/login', 
-                  passport.authenticate('login'), 
-                  sessionController.postSessions);
+                            passport.authenticate('login'), 
+                            sessionController.postSessions);
 
 sessionRouter.post('/register', (req, res, next) => {
-
-  const { first_name, last_name, email, password, age } = req.body;
-  try {
+      const { first_name, last_name, email, password, age } = req.body;
       if (!last_name || !first_name || !email || !password || !age) {
-          CustomError.createError({
+          const customError = CustomError.createError({
               name: 'Error creating user',
               cause: generateUserErrorInfo({ first_name, last_name, email, password, age }),
               message: 'All fields must be completed',
               code: EErrors.DATOS_INVALIDOS_ERROR
-          })
+          });
+          return next(customError);
       }
       next();
-  } catch (error) {
-      next(error);
-  };
 }, passport.authenticate('register'), sessionController.registerPost);
+
+
  
 sessionRouter.get('/current', 
                   passportError('jwt'), 

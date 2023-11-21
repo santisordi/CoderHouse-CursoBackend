@@ -6,3 +6,9 @@ export const logger = winston.createLogger({
         new winston.transports.File({ filename: './logs/errors.log', level: 'warn'})
     ]
 });
+
+export const addLogger = (req, res, next) => {
+    req.logger = logger;
+    req.logger.info(`Request ${req.method} - ${req.url} - Date: ${new Date().toLocaleString()}`);
+    next();
+};

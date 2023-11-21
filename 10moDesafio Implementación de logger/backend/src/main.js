@@ -13,6 +13,9 @@ import staticsRouter from './router/statics.routes.js';
 import router from './router/main.routes.js';
 import cors from 'cors';
 import errorHandler from './middlewares/errors/errorHandler.js';
+import { addLogger } from './utils/logger.js';
+import { requestLogger } from './middlewares/requestLogger.js';
+
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
 
@@ -29,6 +32,13 @@ const corsOptions = {
 };
 
 const app = express();
+app.use(addLogger);
+
+app.get('/', requestLogger, (req, res) => {
+    req.logger.warn('alerta')
+    res.send({message: "PruebaLogger"});
+});
+
 const PORT = 4000;
 //conexion a atlas
 mongoConnect();

@@ -16,23 +16,19 @@ productRouter.get('/:pid', productsController.getProduct);
 //Mocking products
 productRouter.get('/mockingproducts', passportError('jwt'), authorization('Admin'), generateMockProducts)
 //Ruta para crear un producto
-productRouter.post('/', (req,res,next) => {
-    const { title, description, stock, price, code, category } = req.body;
-    try {
-        if ((!title || !description || !stock || !price || !code || !category)) {
-            CustomError.createError({
-                name: 'Error creating product',
-                cause: generateProductErrorInfo({ title, description, stock, price, code, category }),
-                message: 'All fields must be completed',
-                code: EErrors.ROUTING_ERROR,
-            });
-        };
-        next();
-    } catch (error) {
-        next(error);
-    };
-}, passportError('jwt'), authorization('Admin'), productsController.postProduct);
-//Ruta para crear un producto o actualizar en caso de que    exista
+sessionRouter.post('/register', (req, res, next) => {
+    const { first_name, last_name, email, password, age } = req.body;
+    if (!last_name || !first_name || !email || !password || !age) {
+       const customError = CustomError.createError({
+            name: 'Error creating user',
+            cause: generateUserErrorInfo({ first_name, last_name, email, password, age }),
+            message: 'All fields must be completed',
+            code: EErrors.DATOS_INVALIDOS_ERROR
+        });
+        return next(customError);
+    }
+    next();
+
 productRouter.put('/:pid', passportError('jwt'), authorization('Admin'), productsController.putProduct);
 //Ruta para borrar un producto según su ID
 productRouter.delete('/:pid', passportError('jwt'), authorization('Admin'), productsController.deleteProduct);
