@@ -12,6 +12,7 @@ import initializePassport from './config/passport.js';
 import staticsRouter from './router/statics.routes.js';
 import router from './router/main.routes.js';
 import cors from 'cors';
+import errorHandler from './middlewares/errors/errorHandler.js';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
 
@@ -77,3 +78,5 @@ app.use('/', router);
 app.get('/*',(req,res)=>{   //Ruta con error 404 que se utiliza a nivel general
     res.send("Error 404: Page not found");
 });
+
+app.use(errorHandler);

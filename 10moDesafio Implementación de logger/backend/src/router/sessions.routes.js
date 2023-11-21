@@ -9,7 +9,23 @@ sessionRouter.post('/login',
                   passport.authenticate('login'), 
                   sessionController.postSessions);
 
-sessionRouter.post('/register',passport.authenticate('register'), sessionController.registerPost);
+sessionRouter.post('/register', (req, res, next) => {
+
+  const { first_name, last_name, email, password, age } = req.body;
+  try {
+      if (!last_name || !first_name || !email || !password || !age) {
+          CustomError.createError({
+              name: 'Error creating user',
+              cause: generateUserErrorInfo({ first_name, last_name, email, password, age }),
+              message: 'All fields must be completed',
+              code: EErrors.DATOS_INVALIDOS_ERROR
+          })
+      }
+      next();
+  } catch (error) {
+      next(error);
+  };
+}, passport.authenticate('register'), sessionController.registerPost);
  
 sessionRouter.get('/current', 
                   passportError('jwt'), 

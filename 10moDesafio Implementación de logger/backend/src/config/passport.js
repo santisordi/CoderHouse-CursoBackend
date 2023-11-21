@@ -9,26 +9,13 @@ import 'dotenv/config.js';
  //Defino estrategia (los mensajes de error se manejan en la ruta, aca se ven los msj html )
  const LocalStrategy = local.Strategy;
  const JWTStrategy = jwt.Strategy;
- const ExtracJWT = jwt.ExtractJwt; //Extractor de los headers de la consulta 
+ const ExtractJWT = jwt.ExtractJwt; //Extractor de los headers de la consulta 
  
  //Función de mi estrategia
  const initializePassport = () => {
-   //con esta funcion extraigo el bearer token
-   // const cookiesExtractor = (req) => {
-   //    let token = null; // Inicializamos token como null
-    
-   //    if (req && req.headers && req.headers.authorization) {
-   //      token = req.headers.authorization; // Si existe req.headers.authorization, asignamos el valor a token
-   //    } else if (req && req.cookies && req.cookies.jwtCookie) {
-   //      token = req.cookies.jwtCookie; // Si no existe req.headers.authorization  pero existe req.cookies.jwtCookie, asignamos su valor a token
-   //    }
-    
-   //    console.log("Token cookie:", token);
-   //    return token; // Devolvemos el valor de token, que será el token JWT si existe o null si no existe
-   //  };
-    
+ 
    //opcion dada en clase
-   const cookiesExtractor = req=> {
+   const cookiesExtractor = (req) => {
       //{} no hay cookies != no exista mi cookie
       //si existen cookies, consulte por mi cookie y sino asigno {}
       const headerToken = req.headers ? req.headers.authorization : null;
@@ -40,7 +27,7 @@ import 'dotenv/config.js';
    //done es como si fuese un res.status(),el callback de respuesta. 
     //Acá defino qué y en qué ruta voy a utilizar mi estrategia
    passport.use('jwt', new JWTStrategy({
-      jwtFromRequest: ExtracJWT.fromExtractors([cookiesExtractor]), //consulto el token de las cookes
+      jwtFromRequest: ExtractJWT.fromExtractors([cookiesExtractor]), //consulto el token de las cookes
       secretOrKey: process.env.JWT_SECRET
    }, async (jwt_payload, done) => {
       try {

@@ -26,13 +26,13 @@ export const authToken = (req, res, next) => {
 
     const token = authHeader.split(' ')[1]; //sweparo en dos el token bearer y token. y me quedo con la parte valida
 //evito accesos no deseados a mi Bdd
-    jwt.sign(token, process.env.JWT_SECRET, (error, credentials) => {
+    jwt.sign(token, process.env.JWT_SECRET, (error, user) => {
         if(error) {
             return res.status(403).send({ error: 'Usuario no autorizado' })
         };
         //desifro el token
-        req.user = credentials.user;
-        next()
+        req.user = user;
+        next();
     });
 
 };

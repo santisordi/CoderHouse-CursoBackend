@@ -12,8 +12,23 @@ productRouter.get('/:pid', productsController.getProduct);
 //Mocking products
 productRouter.get('/mockingproducts', passportError('jwt'), authorization('Admin'), generateMockProducts)
 //Ruta para crear un producto
-productRouter.post('/', passportError('jwt'), authorization('Admin'), productsController.postProduct);
-//Ruta para crear un producto o actualizar en caso de que exista
+productRouter.post('/', (req,res,next) => {
+    const { title, description, stock, price, code, category } = req.body;
+    try {
+        if ((!title || !description || !stock || !price || !code || !category)) {
+            CustomError.createError({
+                name: 'Error creating product',
+                cause: generateProductErrorInfo({ title, description, stock, price, code, category }),
+                message: 'All fields must be completed',
+                code: EErrors.ROUTING_ERROR,
+            });
+        };
+        next();
+    } catch (error) {
+        next(error);
+    };
+}, passportError('jwt'), authorization('Admin'), productsController.postProduct);
+//Ruta para crear un producto o actualizar en caso de que    exista
 productRouter.put('/:pid', passportError('jwt'), authorization('Admin'), productsController.putProduct);
 //Ruta para borrar un producto según su ID
 productRouter.delete('/:pid', passportError('jwt'), authorization('Admin'), productsController.deleteProduct);
