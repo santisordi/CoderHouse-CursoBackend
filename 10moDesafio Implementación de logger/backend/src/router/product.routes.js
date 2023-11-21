@@ -2,6 +2,10 @@ import { Router } from 'express';
 import productsController from '../controllers/product.controller.js';
 import { passportError, authorization } from '../utils/messageErrors.js';
 import { generateMockProducts } from '../controllers/mockingController.js';
+import CustomError from "../services/errors/CustomError.js";
+import EErrors from '../services/errors/enums.js';
+import { generateProductErrorInfo } from '../services/errors/info.js';
+
 
 
 const productRouter = Router();

@@ -52,20 +52,22 @@ const getGithubSessions = async (req, res) => {
 };
 
 const getLogout = async (req, res) => {
-    if (req.session.user) {
-        try {
-          req.session.destroy()
+  try {
+      if (req.session) {
+          await req.session.destroy();
           res.clearCookie('jwtCookie');
-          res.status(200).send({ resultado: 'Has cerrado sesion' })
-        //   res.redirect("/static/signin");
-        }
-        catch (error) {
-          res.status(400).send({ error: `Error al cerrar sesion: ${error}` });
-        }
+          res.status(200).send({ resultado: 'Has cerrado sesion' });
+          //   res.redirect("/static/signin");
       } else {
-        res.status(400).send({ error: `No hay sesion iniciada` });
-      };
+          console.log(req.session.user);
+          res.status(400).send({ error: 'No hay sesion iniciada' });
+      }
+  } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      res.status(500).send({ error: 'Error interno del servidor al cerrar sesión' });
+  };
 };
+
 
 const sessionController = {
     postSessions,

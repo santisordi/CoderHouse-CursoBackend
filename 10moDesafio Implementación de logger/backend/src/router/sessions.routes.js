@@ -2,6 +2,9 @@ import { Router } from "express";
 import passport from "passport";
 import { passportError, authorization } from "../utils/messageErrors.js";
 import sessionController from "../controllers/sessions.controler.js";
+import CustomError from "../services/errors/CustomError.js";
+import EErrors from '../services/errors/enums.js';
+import { generateUserErrorInfo } from "../services/errors/info.js";
 
 const sessionRouter = Router();
  //Ruta para crear el login del usuario con passport
