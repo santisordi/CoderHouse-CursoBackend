@@ -28,7 +28,8 @@ sessionRouter.post('/register', (req, res, next) => {
         return next(customError);
     }
     next();
-
+  }, passport.authenticate('register'), sessionController.registerPost);
+//Ruta para crear un producto o actualizar en caso de que    exista
 productRouter.put('/:pid', passportError('jwt'), authorization('Admin'), productsController.putProduct);
 //Ruta para borrar un producto según su ID
 productRouter.delete('/:pid', passportError('jwt'), authorization('Admin'), productsController.deleteProduct);
