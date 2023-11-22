@@ -13,8 +13,7 @@ import staticsRouter from './router/statics.routes.js';
 import router from './router/main.routes.js';
 import cors from 'cors';
 import errorHandler from './middlewares/errors/errorHandler.js';
-import { addLogger } from './utils/logger.js';
-import { requestLogger } from './middlewares/requestLogger.js';
+import { logger, addLogger } from './utils/logger.js';
 
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
@@ -32,20 +31,14 @@ const corsOptions = {
 };
 
 const app = express();
-app.use(addLogger);
-
-app.get('/', requestLogger, (req, res) => {
-    req.logger.warn('alerta')
-    res.send({message: "PruebaLogger"});
-});
 
 const PORT = 4000;
 //conexion a atlas
 mongoConnect();
 //Server
 const server = app.listen(PORT, ()=>{
-    console.log(`Servidor Express Puerto ${PORT}`);
-    console.log(`http://localhost:${PORT}`);
+    logger.info(`Servidor Express Puerto ${PORT}`);
+    logger.info(`http://localhost:${PORT}`);
 });
 
 //Conexion a Socket
@@ -79,6 +72,7 @@ app.use(session({
 initializePassport(); // se aplica esta estrategia de login 
 app.use(passport.initialize()); //se inicializa passport
 app.use(passport.session()); //se inicializa para trabajar con las sesiones de mis usuarios
+app.use(addLogger);
 
 //Routes
 app.use('/static', express.static (path.join(__dirname, '/public')), staticsRouter);

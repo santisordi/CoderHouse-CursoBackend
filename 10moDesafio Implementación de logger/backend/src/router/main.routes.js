@@ -7,6 +7,7 @@ import sessionRouter from './sessions.routes.js';
 import profileRouter from './profile.routes.js';
 import mailRouter from './mail.routes.js';
 import ticketRouter from './tickets.routes.js';
+import loggerRouter from './logger.routes.js';
 
 const router = Router();
 
@@ -18,7 +19,6 @@ router.use('/api/sessions', sessionRouter );
 router.use('/api/profile', profileRouter);
 router.use('/api/mail', mailRouter);
 router.use('/api/tickets',ticketRouter);
-
-
+router.use('/api/logger', loggerRouter);
 
 export default router;
