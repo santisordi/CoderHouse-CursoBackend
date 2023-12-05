@@ -1,10 +1,15 @@
 import { Router } from "express";
 import usersController from "../controllers/users.controller.js";
 
+//utilizamos modulo cripto porque es un modulo mas rpido para algo simple (no usamos JWT)
+
 const userRouter = Router();
+
 //Ruta para obtener usuarios
 userRouter.get('/', usersController.userGet);
-  
+userRouter.post('/password-recovery', usersController.userPostRecovPass);
+userRouter.get('/reset-password/:token', usersController.userPostResetPass);
+
 export default userRouter;
 
 // import { createHash  } from "../utils/bcrypt.js";

@@ -1,15 +1,12 @@
 import express from 'express';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import { engine } from 'express-handlebars';
 import { configureSocket } from './socket.js';
 import { __dirname } from './path.js';
-import path from 'path';
 import MongoStore from 'connect-mongo';
 import mongoConnect from './dataBase.js';
 import passport from 'passport';
 import initializePassport from './config/passport.js';
-import staticsRouter from './router/statics.routes.js';
 import router from './router/main.routes.js';
 import cors from 'cors';
 import errorHandler from './middlewares/errors/errorHandler.js';
@@ -59,10 +56,6 @@ app.use(session({ //Config session en app en mongo
     saveUninitialized: true
 }));
 
-app.engine('handlebars', engine()); //defino que trabajo con habndlebars y guardo config de engine
-app.set('view engine', 'handlebars');
-app.set('views', path.resolve(__dirname, './views')); //esta es otra forma de trabajar con rutas
-// const upload = multer({ storage: storage});
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false, //Permite que la sesion permanezca activa en caso de estar inactivo. Con false muere la sesión
@@ -75,9 +68,7 @@ app.use(passport.session()); //se inicializa para trabajar con las sesiones de m
 app.use(addLogger);
 
 //Routes
-app.use('/static', express.static (path.join(__dirname, '/public')), staticsRouter);
 app.use('/', router);
-
 
 app.get('/*',(req,res)=>{   //Ruta con error 404 que se utiliza a nivel general
     res.send("Error 404: Page not found");
