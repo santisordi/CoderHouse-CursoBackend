@@ -136,13 +136,13 @@ components:
           description: Categoría del producto
       example:
         _id: ObjectId('31a3123f2313e')
-        title: Celular Samsung 04
-        description: Celular de alta gama
+        title: Mate campo
+        description: Mate imperial
         price: 11500
         stock: 23
-        thumbnail: "https://cdn3.iconfinder.com/data/icons/education-209/64/bus-vehicle-transport-school-128.png"
+        thumbnail: Sin imagen
         code: 1231
-        category: "Celulares"
+        category: Mates
     ProductsNoID:
       type: object
       properties:
