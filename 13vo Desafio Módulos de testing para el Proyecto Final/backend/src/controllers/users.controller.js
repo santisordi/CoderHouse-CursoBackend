@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { sendRecoveryEmail } from "../config/nodemailer.js";
 import { validatePassword } from "../utils/bcrypt.js";
 import { logger } from "../utils/logger.js";
-import 'dotenv/config'
+import 'dotenv/config.js'
 
 
 const userGet = async (req, res) => {   
