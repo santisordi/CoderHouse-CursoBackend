@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/main.js",
-    "test": "mocha"
+    "start": "node src/main.js",
+    "test": "mocha test/users.test.js",
+    "testChai": "mocha test/usersChai.test.js",
+    "testSuper": "mocha test/SuperTest.test.js"
   },
   "keywords": [],
   "author": "",
@@ -44,7 +47,9 @@
   },
   "devDependencies": {
     "@types/faker": "^6.6.9",
+    "chai": "^4.3.10",
     "mocha": "^10.2.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   }
 }
