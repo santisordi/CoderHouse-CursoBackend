@@ -9,6 +9,7 @@ const userRouter = Router();
 userRouter.get('/', usersController.userGet);
 userRouter.post('/password-recovery', usersController.userPostRecovPass);
 userRouter.get('/reset-password/:token', usersController.userPostResetPass);
+userRouter.post('/:uid/documents', usersController.userDocuments);
 
 export default userRouter;
 
