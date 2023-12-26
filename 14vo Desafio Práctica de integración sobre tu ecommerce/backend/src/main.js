@@ -29,7 +29,7 @@ const corsOptions = {
 
 const app = express();
 
-const PORT = 4000;
+const PORT = 3000;
 //conexion a atlas
 mongoConnect();
 //Server

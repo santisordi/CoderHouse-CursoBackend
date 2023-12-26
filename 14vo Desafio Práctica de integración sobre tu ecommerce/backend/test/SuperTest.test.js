@@ -64,18 +64,19 @@ describe('Test de Usuario y carrito', async () => {
             value: tokenResult.split("=")[1]
         };
 
-        expect(token.value).to.be.ok;
-        expect(token.name).to,be.ok.and.equal('jwtCookie');
-        expect(__doby.cartId).to.be.ok;
+        expect( token.value ).to.be.ok;
+        expect( token.name ).to,be.ok.and.equal('jwt-Cookie');
+        expect( __body.cartId ).to.be.ok;
 
         userId = __body._id;
         cartId = __body.cartId; 
         console.log(`Token:  ${token.name} = ${token.value}`);
     });
 
+    //agregar un producto al carrito
     it('Ruta: api/carts.product/p:id con metodo POST', async()=>{
         const cid = cartId;
-        const pid = "" //modelo de producto
+        const pid = "" //modelo de producto o prodcto de prueba
 
         // await requester.post(`/api/carts/products/${pid}`).set('Cookie', [`${token.name} = ${token.value}`]);
 
@@ -84,23 +85,24 @@ describe('Test de Usuario y carrito', async () => {
         expect(status).to.be.equal(200);       
         logger.info("Agregado producto en api carts");
     });
-
+    //actualizar la cantidad
     it('Ruta: api/carts/cid/product/.pid metodo PUT', async()=>{
 
         const cid = cartId;
         const pid = "" //modelo de producto
         const newQuantity = { quantity: 6};
 
+        //hago la consulta y envio con la cookie la cantiadad
         const { __body, status }  = await requester.put(`/api/carts/${cid}/product/${pid}`).send(newQuantity).set('Cookie', [`${token.name} = ${token.value}`]);
-
+        //cmpruebo si es correcto
         expect(status).to.be.equal(200);
         logger.info("Cantidad producto actualizada en api carts");
         logger.info(`Status: ${__body}`);
     });
 
+    //eliminar el usuario
     it('Ruta: api/users/uid metodo DELETE', async()=>{
         const uid = userId;
-
         const { __body, status } = await requester.delete(`/api/users/${uid}`).set('Cookie', [`${token.name} = ${token.value}`]);
         
         expect(status).to.be.equal(200);
