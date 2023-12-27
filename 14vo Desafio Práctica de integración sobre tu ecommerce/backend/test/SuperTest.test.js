@@ -71,7 +71,7 @@ describe('App tests', () => {
         const tokenResult = header['set-cookie'][0];
 
         expect(tokenResult).to.be.ok;
-        expect(status).to.be.equal(302);//status(302) de nuevo por ser redirect
+        expect(status).to.be.equal(200);
         logger.info(`Login status: ${status}`);
         token = {
             name: tokenResult.split('=')[0],
