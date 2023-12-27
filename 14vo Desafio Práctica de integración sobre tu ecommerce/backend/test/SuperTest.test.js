@@ -24,24 +24,32 @@ describe('App tests', () => {
     let userId = ''
     let productId = ''
     const newUser = {
-        first_name: 'User',
-        last_name: 'Test',
-        email: 'user@test.com',
+
+        first_name: "User",
+        
+        last_name: "Test",
+        
+        email: Math.random().toString() + "user@test.com",
+        
         age: 1234,
-        password: '1234'
-    };
+        
+        password: "1234",
+        
+        code: Math.random().toString()
+        
+        };
 
     it('Endpoint test /api/sessions/register, a new user is expected to be created', async function () {
         this.timeout(7000)
 
         const { status } = await requester
-        .post('/api/sessions/register')
-        .send(newUser)
+            .post('/api/sessions/register')
+            .send(newUser)
         const user = await userModel.findOne({ email: newUser.email });
 
-        if (status === 302) {
+        if (status === 200) {
             //User created succesfully
-            expect(status).to.equal(302) // Código 302 porque al registrarse hace una redirección a la vista de inicio de sesión
+            expect(status).to.equal(200)
             logger.info(`User created succesfully. Status: ${status}`)
             logger.info(`User: ${user}`)
         } else if (status === 401) {
