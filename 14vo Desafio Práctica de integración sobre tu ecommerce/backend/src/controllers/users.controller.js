@@ -4,8 +4,6 @@ import { sendRecoveryEmail } from "../config/nodemailer.js";
 import { validatePassword } from "../utils/bcrypt.js";
 import { logger } from "../utils/logger.js";
 import 'dotenv/config.js'
-import upload from "../middlewares/multer.js";
-import multer from "multer";
 import cartModel from "../models/carts.models.js";
 
 const userGet = async (req, res) => {   
@@ -76,29 +74,6 @@ const userPostResetPass = async (req, res, next) =>{
     };
 };
 
-const userDocuments = async (req, res) => {
-    try {
-        req.body.fileType = 'document'; // Establecer el tipo de archivo como 'document'
-        // Utilizar el middleware Multer para subir archivos
-        upload.array('documents')(req, res, async function (err) {
-            if (err instanceof multer.MulterError) {
-                // Manejar errores de Multer
-                return res.status(400).json({ error: 'Error al subir archivos', details: err.message });
-            } else if (err) {
-                // Manejar otros errores
-                return res.status(500).json({ error: 'Error interno del servidor', details: err.message });
-            };
-
-            // Obtener información del usuario desde la solicitud
-            const userId = req.params.uid;
-            res.status(200).json({ message: 'Archivos subidos correctamente' });
-        });
-    } catch (error) {
-        logger.error(`[ERROR] - Date: ${new Date().toLocaleTimeString()} - ${error.message}`);
-        res.status(500).send(`Error al subir documentos: ${error}`);
-    };
-};
-
 const deleteUser = async (req, res) => {
     const {uid} = req.params; 
     try {
@@ -118,14 +93,19 @@ const deleteUser = async (req, res) => {
         logger.error(`[ERROR] - Date: ${new Date().toLocaleTimeString()} - ${error.message}`);
         res.status(500).send({ message: `Error deleting user: ${error}` });
     };
-};   
+};
+
+const uploadFile = (req, res) => {
+    res.status(200).send ({mesagge: 'Archivo enviado'});
+};
+
 
 const usersController = { 
     userGet, 
     userPostRecovPass,
     userPostResetPass,
-    userDocuments,
-    deleteUser
+    deleteUser,
+    uploadFile
 };
 
 export default usersController;

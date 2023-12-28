@@ -147,19 +147,16 @@ describe('App tests', () => {
         logger.info(`Status: ${status}`);
     });
 
-
     it('Ruta: api/users/uid metodo DELETE', async () => {
         const uid = userId;
-        console.log('User ID test:', uid); 
+        logger.info('User ID test:', uid); 
     
         const { body, status } = await requester.delete(`/api/users/${uid}`).set('Cookie', [`${token.name} = ${token.value}`]);
-        console.log('DELETE Response:', JSON.stringify({ body, status }, null, 2));
+        logger.info('DELETE Response:', JSON.stringify({ body, status }, null, 2));
     
         expect(status).to.equal(200);
     
-        console.log("Usuario eliminado en api/users");
-        console.log(`Status: ${body}`);
+        logger.info("Usuario eliminado en api/users");
+        logger.info(`Status: ${body}`);
     });
-    
-    
 });
