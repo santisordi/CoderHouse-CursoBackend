@@ -1,5 +1,6 @@
 import { Router } from "express";
 import usersController from "../controllers/users.controller.js";
+import { authorization, passportError } from "../utils/messageErrors.js";
 
 //utilizamos modulo cripto porque es un modulo mas rpido para algo simple (no usamos JWT)
 
@@ -9,6 +10,8 @@ const userRouter = Router();
 userRouter.get('/', usersController.userGet);
 userRouter.post('/password-recovery', usersController.userPostRecovPass);
 userRouter.get('/reset-password/:token', usersController.userPostResetPass);
+userRouter.post('/:uid/documents', usersController.userDocuments);
+userRouter.delete('/:uid', passportError('jwt'), authorization('user','admin'), usersController.deleteUser);
 
 export default userRouter;
 

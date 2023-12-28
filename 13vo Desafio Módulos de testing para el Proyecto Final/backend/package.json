@@ -7,9 +7,9 @@
   "scripts": {
     "dev": "nodemon src/main.js",
     "start": "node src/main.js",
-    "test": "mocha test/users.test.js",
-    "testChai": "mocha test/usersChai.test.js",
-    "testSuper": "mocha test/SuperTest.test.js"
+    "testProd": "mocha test/products/products.test.js",
+    "testCart": "mocha test/carts/carts.test.js",
+    "superTest": "mocha test/SuperTest.test.js"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +32,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.4",
     "mongoose-paginate-v2": "^1.7.31",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
     "npm": "^10.1.0",
     "passport": "^0.6.0",

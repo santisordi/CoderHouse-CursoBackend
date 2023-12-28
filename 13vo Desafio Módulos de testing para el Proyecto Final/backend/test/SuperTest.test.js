@@ -1,113 +1,165 @@
-import mongoose from "mongoose";
+import 'dotenv/config';
 import chai from 'chai';
-import supertest from  'supertest';
-import 'dotenv/config.js';
+import supertest from 'supertest';
+import mongoose from 'mongoose';
 import { logger } from "../src/utils/logger.js";
+import productsModel from "../src/models/products.model.js";
+import cartModel from '../src/models/carts.models.js';
+import { userModel } from '../src/models/users.model.js';
 
-before(async () => {
-    this.timeout(5000);
-    await mongoose
-        .connect(process.env.MONGO_URL)
-        .then(() => {
-            logger.info("MongoDB connected");
-        })
-        .catch((error) => logger.info(`Error connecting to MongoDB Atlas: ${error}`));
-});
+await mongoose
+    .connect(process.env.MONGO_URL)
+    .then(async () => {
+        logger.info("MongoDB connected");
+    })
+    .catch((error) => console.log(`Error connecting to MongoDB Atlas: ${error}`));
 
-after(async () => {
-    await mongoose.disconnect();
-});
-const requester = supertest('http://localhost:4000');
-const {expect} = chai;
+const expect = chai.expect;
+const requester = supertest('http://localhost:3000');
 
-describe('Test de Usuario y carrito', async () => { 
-    // before(async()=> { //el before se utiliza antes que todo para llamar a los modelos
-    //     //conectarme al usuario
-    //     //conectarme a product
-    // });
-    // //por cada ejecucion de mi proyecto hago lo siguiente con el beforeEach
-    // beforeEach(async()=>{
-    //     //generar nuevo usuario
-    //     //generar nuevo producto
-    // });
-
+describe('App tests', () => {
     let token = {};
-    let cartId = "";
-    let userId = "";
-    let newUser = {
-        first_name: 'User',
-        last_name: 'Test',
-        email: 'user@test.com',
-        password: '1234'
-    };
+    let cartId = '';
+    let userId = '';
+    let productId = '';
+    const newUser = {
 
-    //esta ok
-    it("Ruta: api/sessions/register para crear usuario"), async ()=>{
- 
-       const { __body, status } = await requester.post('api/sessions/register').send(newUser);
+        first_name: "User",
+        
+        last_name: "Test",
+        
+        email:  "user@test.com",
+        
+        age: 1234,
+        
+        password: "1234",
+        
+        code: Math.random().toString()
+        
+        };
+    //ok
+    it('Endpoint test /api/sessions/register, a new user is expected to be created', async function () {
+        this.timeout(7000);
+
+        const { status } = await requester
+            .post('/api/sessions/register')
+            .send(newUser);
+        const user = await userModel.findOne({ email: newUser.email });
+
+        if (status === 200) {
+            //User created succesfully
+            expect(status).to.equal(200);
+            logger.info(`User created succesfully. Status: ${status}`);
+            logger.info(`User: ${user}`);
+        } else if (status === 401) {
+            //User already exists
+            expect(status).to.equal(401);
+            logger.info(`User already exists. Status: ${status}`);
+        } else {
+            //Any other unexpected status
+            throw new Error(`Unexpected status code: ${status}`);
+        };
+    });
+
+    //ok
+    it('Endpoint test /api/sessions/login, a user is expected to log in', async function () {
+        this.timeout(7000);
+
+        const { status, header} = await requester
+        .post('/api/sessions/login')
+        .send(newUser);
+        const tokenResult = header['set-cookie'][0];
+
+        expect(tokenResult).to.be.ok;
         expect(status).to.be.equal(200);
-        logger.info( `Status: ${__body}`);
-    };
-
-    //esta ok
-    it('Ruta: api/session/login con el metodo POST', async()=>{
-        const response = await requester.post('api/sessions/lgin').send(newUser);
-        const {__body} = response
-        const tokenResult = response.header['jwt-cookie'][0]; 
-
-        expect(tokenResult).to.be.ok; // comprueba la existencia del elemento
-    
-        expect(response.status).to.be.equal(200) ;// consulto si la respuesta de la peticion es = a 200
-    
+        logger.info(`Login status: ${status}`);
         token = {
-            name: tokenResult.split("=")[0],
-            value: tokenResult.split("=")[1]
+            name: tokenResult.split('=')[0],
+            value: tokenResult.split('=')[1]
         };
 
-        expect(token.value).to.be.ok;
-        expect(token.name).to,be.ok.and.equal('jwtCookie');
-        expect(__doby.cartId).to.be.ok;
+        expect(token).to.be.ok;
+        expect(token.name).to.be.ok.and.equal('jwtCookie');
 
-        userId = __body._id;
-        cartId = __body.cartId; 
-        console.log(`Token:  ${token.name} = ${token.value}`);
+        const user = await userModel.findOne({ email: newUser.email });
+        logger.info(user);
+        userId = user._id;
+        cartId = user.cart._id;
+        logger.info(`Token: ${token.name} = ${token.value}`); 
     });
-
-    it('Ruta: api/carts.product/p:id con metodo POST', async()=>{
+    //ok
+    it('Endpoint test /api/sessions/current, it is expected to get the current user', async function () {
+        const { statusCode, ok } = await requester
+            .get('/api/sessions/current')
+            .set('Cookie', [`jwtCookie=${token.value}`]);
+        logger.info(statusCode, ok);
+        logger.info(`Token: ${token.name} = ${token.value}`);
+    });
+    //ok
+    it('Endpoint test /api/carts/:cid/products/:pid, a product is expected to be added to the cart', async function () {
         const cid = cartId;
-        const pid = "" //modelo de producto
+        const newProduct = await productsModel.create({
+            title:"test product",
+            description:"this is a test product",
+            price:100,
+            stock:500,
+            category:"testing",
+            code:`test${Math.random().toString(36).substring(7)}`
+        });
+        productId = newProduct._id;
+        const quantity = 1;
 
-        // await requester.post(`/api/carts/products/${pid}`).set('Cookie', [`${token.name} = ${token.value}`]);
+        /* await requester.post(`/api/carts/${cid}/product/${productId}`).set('Cookie', [`${token.name} = ${token.value}`]) TO ADD TWICE THE SAME PRODUCT */ 
+        const { status } = await requester
+            .put(`/api/carts/${cid}/products/${productId}`)
+            .send({ quantity })
+            .set('Cookie', [`${token.name} = ${token.value}`]);
 
-        const { __body, status } = await requester.post(`/api/carts/${cid}/product/${pid}`).set('Cookie', [`${token.name} = ${token.value}`]);
+        logger.info(`Status: ${status}`);
+        console.log('Response Body:', JSON.stringify(status, null, 2));
 
-        expect(status).to.be.equal(200);       
-        logger.info("Agregado producto en api carts");
+
+        expect(status).to.equal(200);
+
+        logger.info('Product added succesfully');
+        const productData = newProduct.toJSON();
+        logger.info(`Product: `, productData);
     });
 
-    it('Ruta: api/carts/cid/product/.pid metodo PUT', async()=>{
-
+    it('Endpoint test /api/carts/:cid/products/:pid, it is expected to modify the quantity of a product in the cart', async function () {
         const cid = cartId;
-        const pid = "" //modelo de producto
-        const newQuantity = { quantity: 6};
-
-        const { __body, status }  = await requester.put(`/api/carts/${cid}/product/${pid}`).send(newQuantity).set('Cookie', [`${token.name} = ${token.value}`]);
-
-        expect(status).to.be.equal(200);
-        logger.info("Cantidad producto actualizada en api carts");
-        logger.info(`Status: ${__body}`);
-    });
-
-    it('Ruta: api/users/uid metodo DELETE', async()=>{
-        const uid = userId;
-
-        const { __body, status } = await requester.delete(`/api/users/${uid}`).set('Cookie', [`${token.name} = ${token.value}`]);
+        const newQty = { quantity : 20 };
         
-        expect(status).to.be.equal(200);
-        logger.info("Usuario eliminado en api/user");
-        logger.info(`Status: ${__body}`); 
+        const { status } = await requester
+            .put(`/api/carts/${cid}/products/${productId}`)
+            .send(newQty)
+            .set('Cookie', [`${token.name} = ${token.value}`]);
+
+        expect(status).to.equal(200);
+
+        const updatedCart = await cartModel.findById(cid);
+        const updatedProduct = updatedCart.products.find(product => product.id_prod.toString() === productId.toString());
+        if(updatedProduct){
+            logger.info(`Product qty successfully updated, new qty: ${updatedProduct.quantity}`)
+        }else {
+            logger.error('Product not found in the updated cart.');
+        };
+        logger.info(`Status: ${status}`);
     });
+
+
+    it('Ruta: api/users/uid metodo DELETE', async () => {
+        const uid = userId;
+        console.log('User ID test:', uid); 
+    
+        const { body, status } = await requester.delete(`/api/users/${uid}`).set('Cookie', [`${token.name} = ${token.value}`]);
+        console.log('DELETE Response:', JSON.stringify({ body, status }, null, 2));
+    
+        expect(status).to.equal(200);
+    
+        console.log("Usuario eliminado en api/users");
+        console.log(`Status: ${body}`);
+    });
+    
+    
 });
-
-
-
