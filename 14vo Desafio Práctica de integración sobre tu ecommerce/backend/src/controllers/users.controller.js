@@ -6,6 +6,7 @@ import { logger } from "../utils/logger.js";
 import 'dotenv/config.js'
 import upload from "../middlewares/multer.js";
 import multer from "multer";
+import cartModel from "../models/carts.models.js";
 
 const userGet = async (req, res) => {   
     try {
@@ -98,11 +99,33 @@ const userDocuments = async (req, res) => {
     };
 };
 
+const deleteUser = async (req, res) => {
+    const {uid} = req.params; 
+    try {
+        console.log('User ID consola:', uid);
+        const user = await userModel.findOneAndDelete({_id: uid});
+        if (!user) {
+            return res.status(404).send('User id not found');
+        };
+        //Deleting his/her cart;
+        const cartId = user.cart;
+        if (cartId) {
+            await cartModel.findByIdAndDelete(cartId);
+            logger.info('Associated cart successfully deleted');
+        }
+        return res.status(200).send('User deleted succesfully');
+    } catch (error) {
+        logger.error(`[ERROR] - Date: ${new Date().toLocaleTimeString()} - ${error.message}`);
+        res.status(500).send({ message: `Error deleting user: ${error}` });
+    };
+};   
+
 const usersController = { 
     userGet, 
     userPostRecovPass,
     userPostResetPass,
-    userDocuments
+    userDocuments,
+    deleteUser
 };
 
 export default usersController;
