@@ -96,6 +96,7 @@ const deleteUser = async (req, res) => {
 };
 
 const uploadFile = (req, res) => {
+    console.log(req.file)
     res.status(200).send ({mesagge: 'Archivo enviado'});
 };
 
