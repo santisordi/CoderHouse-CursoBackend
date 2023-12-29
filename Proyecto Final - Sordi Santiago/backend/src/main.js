@@ -15,7 +15,7 @@ import { logger, addLogger } from './utils/logger.js';
 // import multer from 'multer';
 // import { userModel } from './models/users.model.js';
 
-const whiteList = ['http://localhost:3000'];
+const whiteList = ['http://localhost:3001'];
 
 const corsOptions = {
     origin: function (origin, callback) {

@@ -10,7 +10,7 @@ export const Login = () => {
         const dataForm = new FormData(formRef.current);//transforma la data del form html en un objeto iterable
         const data = Object.fromEntries(dataForm);  //dado un objeto iterator me lo transforma en una simple
         
-        const response = await fetch('http://localhost:4000/api/sessions/login', {
+        const response = await fetch('http://localhost:3000/api/session/login', {
             method:'POST',    
             headers: {
                     'Content-type': 'application/json',
