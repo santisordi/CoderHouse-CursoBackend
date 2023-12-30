@@ -12,7 +12,7 @@ cartRouter.post('/', cartsController.postCart);
 //Finalizar compra
 cartRouter.post('/:cid/purchase', passportError('jwt'), authorization('user'), cartsController.purchaseCart);
 //add product to cart (agrega el producto ok y actualiza si existe)
-cartRouter.put('/:cid/products/:pid', passportError('jwt'), authorization('user'),cartsController.putProductsToCart);
+cartRouter.post('/:cid/products/:pid', passportError('jwt'), authorization('user'),cartsController.addProductToCart);
 //update cart by id 
 cartRouter.put('/:cid', passportError('jwt'), authorization('user'),cartsController.updateProductToCart);
 // delete pid from cart 

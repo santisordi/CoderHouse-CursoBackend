@@ -1,6 +1,7 @@
 import cartModel from '../models/carts.models.js';
-import { logger } from '../utils/logger.js';
 import 'dotenv/config.js';
+import { logger } from '../utils/logger.js';
+import productsModel from '../models/products.model.js';
 // import productsModel from '../models/products.model.js';
 
 //Get Carts 
@@ -40,34 +41,54 @@ const postCart = async (req, res) => {
         res.status(400).send ({ error:`Error al crear carritos: ${error}`});
     };
 };
-//put product to cart (agrega el producto ok y actualiza si existe)
-const putProductsToCart = async (req, res) => {
-    const { cid, pid } = req.params;
-    const { quantity } = req.body;
 
+//GET CART BY ID
+export const getCartById = async (req, res) => {
     try {
-        // Verificar si el carrito existe
-        const cart = await cartModel.findByIdAndUpdate(cid);
-        !cart ?  res.status(404).send({ resultado: 'Cart not found' }) : ""
-        
-        // Verificar si existe el producto
-        const prodIndex = cart.products.findIndex(prod => prod.id_prod.toString() === pid);
+        const { cid } = req.params;
+        const cart = await cartModel.findById(cid);
+        cart ? res.status(200).send({ resultado: 'OK', message: cart })
+            : res.status(404).send({ error: `Carrito no encontrado: ${error}` });
+    }
+    catch (error) {
+        res.status(400).send({ error: `Error al obtener carrito: ${error}` });
+    }
+}
 
-        prodIndex !== -1 ?
-            // Si el producto ya existe, actualiza la cantidad
-            cart.products[prodIndex].quantity += Number(quantity):
-            // Si el producto no existe, agrega uno nuevo al carrito
-            cart.products.push({ id_prod: pid, quantity });
+//ADD PRODUCT TO CART
+export const addProductToCart = async (req, res) => {
+    try {
+        const { quantity } = req.body;
+        const { cid, pid } = req.params;
 
-        // Guardar el carrito actualizado en la base de datos
+        const cart = await cartModel.findById(cid);
+        const product = await productsModel.findById(pid);
+        const findIndex = cart.products.findIndex(product => product.id_prod._id.equals(pid));
+
+        //Check if product exists in cart
+        if (findIndex !== -1) {
+            //Check if stock is enough
+            if (product.stock < cart.products[findIndex].quantity + quantity) {
+                res.status(400).send({ error: `Error al agregar producto al carrito: No hay stock suficiente, solo tenemos ${product.stock} unidad(es) disponible(s)` });
+                return;
+            }
+            cart.products[findIndex].quantity += quantity;
+        } else {
+            if (product.stock < quantity) {
+                res.status(400).send({ error: `Error al agregar producto al carrito: No hay stock suficiente, solo tenemos ${product.stock} unidad(es) disponible(s)` });
+                return;
+            }
+            cart.products.push({ id_prod: pid, quantity: quantity });
+        }
+
         await cart.save();
-
         res.status(200).send({ resultado: 'OK', message: cart });
-    } catch (error) {
-		logger.error(`[ERROR] - Date: ${new Date().toLocaleTimeString()} - ${error.message}`);
-        res.status(400).send({ error: `Error al agregar productos: ${error}` });
+    }
+    catch (error) {
+        res.status(400).send({ error: `Error al agregar producto al carrito: ${error}` });
     };
 };
+
 //update cart by id 
 const updateProductToCart = async (req, res) => {
     const { cid } = req.params;
@@ -178,7 +199,7 @@ const cartsController = {
 	getCarts,
 	getCart,
 	postCart,
-	putProductsToCart,
+	addProductToCart,
 	updateProductToCart,
 	deleteProductCart,
 	deleteProductsCart,

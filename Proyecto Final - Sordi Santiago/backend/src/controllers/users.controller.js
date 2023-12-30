@@ -74,7 +74,7 @@ const userPostResetPass = async (req, res, next) =>{
     };
 };
 
-const deleteUser = async (req, res) => {
+const deleteUserById = async (req, res) => {
     const {uid} = req.params; 
     try {
         console.log('User ID consola:', uid);
@@ -105,7 +105,7 @@ const usersController = {
     userGet, 
     userPostRecovPass,
     userPostResetPass,
-    deleteUser,
+    deleteUserById  ,
     uploadFile
 };
 
