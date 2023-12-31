@@ -100,13 +100,41 @@ const uploadFile = (req, res) => {
     res.status(200).send ({mesagge: 'Archivo enviado'});
 };
 
+const deleteInactiveUser = async (req, res) => {
+    try {
+        const users = await userModel.find ({ last_connection: { $lt: new Date(Date.now () - process.env.INACTIVE_USER_TIME)}});
+
+        if (users.length === 0) {
+            logger.warn("No se encontraron usuarios inactivos")
+        };
+
+        await Promise.all(users.map(async (user)=>{
+            const { _id, email, cart } = user;
+            try {
+                await sendAccountDeletion(email);
+                await userModel.findByIdAndDelete(_id);
+                await cartModel.findByIdAndDelete(cart);
+            } catch (error) {
+                logger.error(`Error al procesar usuario: ${error.mesagge}`);
+                return res.status(500).send({ error: `Error al procesar usuario: ${error.mesagge}` });
+            }
+        }));
+        logger.info(`Usuarios inactivos eliminados correctamente: ${users.length}`);
+        return res.status(200).send({ resultado: 'OK', message: 'Usuarios inactivos eliminados correctamente' });
+    } catch (error) {
+        logger.error(`Error al eliminar usuarios inactviso: ${error}`);
+        return res.status(500).send({ error:`Error al eliminar usuarios inactviso: ${error}` });
+    };
+};
+
 
 const usersController = { 
     userGet, 
     userPostRecovPass,
     userPostResetPass,
-    deleteUserById  ,
-    uploadFile
+    deleteUserById,
+    uploadFile,
+    deleteInactiveUser
 };
 
 export default usersController;

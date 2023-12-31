@@ -11,7 +11,7 @@ userRouter.post('/password-recovery', usersController.userPostRecovPass);
 userRouter.get('/reset-password/:token', usersController.userPostResetPass);
 userRouter.post('/:uid/documents', upload.array('docs', 10), usersController.uploadFile);
 userRouter.delete('/:uid', passportError('jwt'), authorization('user'), usersController.deleteUserById);
-userRouter.delete('/', passportError('jwt'), authorization(['admin']));
+userRouter.delete('/', passportError('jwt'), authorization('Admin'), usersController.deleteInactiveUser);
 
 export default userRouter;
 

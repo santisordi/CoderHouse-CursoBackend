@@ -78,25 +78,29 @@ const addProductToCart = async (req, res) => {
 
 //update cart by id 
 const updateProductToCart = async (req, res) => {
-    const { cid } = req.params;
-	const { updateProducts } = req.body;
+    try {
+        const { cid } = req.params;
+        const updateProducts = req.body;
+        const cart = await cartModel.findById(cid);
 
-	try {
-		const cart = await cartModel.findById(cid);
-		updateProducts.forEach(prod => {
-			const productExists = cart.products.find(cartProd => cartProd.id_prod.toString() == prod.id_prod);
-			productExists ?	productExists.quantity += prod.quantity
-                          : cart.products.push(prod);			
-		}); 
-		await cart.save();
-		cart
-			? res.status(200).send({ resultado: 'OK', message: cart })
-			: res.status(404).send({ resultado: 'Not Found', message: cart });
-	} catch (error) {
-		logger.error(`[ERROR] - Date: ${new Date().toLocaleTimeString()} - ${error.message}`);
-		res.status(400).send({ error: `Error al agregar productos: ${error}` });
-	};
-};
+        updateProducts.forEach(product => {
+            const productExist = cart.products.find(prod => prod.id_prod._id.equals(product.id_prod));
+            if (productExist) {
+                productExist.quantity += product.quantity; //Elijo sumar la cantidad del producto en vez de reemplazarla
+            } else {
+                cart.products.push(product);
+            }
+        });
+        await cart.save();
+
+        cart ?
+            res.status(200).send({ resultado: 'OK', message: cart })
+            : res.status(404).send({ error: `Carrito no encontrado: ${error}` });
+    }
+    catch (error) {
+        res.status(400).send({ error: `Error al modificar carrito: ${error}` });
+    }
+}
 
 //MODIFY QTY OF PRODUCT IN CART
 const modifyProductQty = async (req, res) => {
