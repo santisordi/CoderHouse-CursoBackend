@@ -2,6 +2,7 @@ import cartModel from '../models/carts.models.js';
 import 'dotenv/config.js';
 import { logger } from '../utils/logger.js';
 import productsModel from '../models/products.model.js';
+import { userModel } from '../models/users.model.js';
 // import productsModel from '../models/products.model.js';
 
 //Get Carts 
@@ -148,14 +149,14 @@ const purchaseCart = async (req, res) => {
 				}
 			});
 			// Verificar si el usuario es premium
-			if (user[0].role === 'premium') {
+			if (user[0].rol === 'premium') {
 				// Aplicar un descuento del 15% si el usuario es premium
 				amount = amount * DESCUENTO;
 			}
 			console.log(purchaseItems);
 			await cartModel.findByIdAndUpdate(cid, { products: [] });
 			res.redirect(
-				`http://localhost:8080/api/tickets/create?amount=${amount}&email=${email}`
+				`http://localhost:3000/api/tickets/create?amount=${amount}&email=${email}`
 			);
 		} else {
 			res.status(404).send({ resultado: 'Not Found', message: cart });

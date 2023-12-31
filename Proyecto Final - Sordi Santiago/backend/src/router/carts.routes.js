@@ -20,7 +20,7 @@ cartRouter.delete('/:cid/product/:pid', passportError('jwt'), authorization('use
 //Empty cart
 cartRouter.delete('/:id', passportError('jwt'), authorization('user'),cartsController.deleteProductsCart);
 //Finalizar compra
-cartRouter.post('/:cid/purchase', passportError('jwt'), authorization('user'), cartsController.purchaseCart);
+cartRouter.post('/:cid', passportError('jwt'), authorization('user'), cartsController.purchaseCart);
 
 export default cartRouter;
 
